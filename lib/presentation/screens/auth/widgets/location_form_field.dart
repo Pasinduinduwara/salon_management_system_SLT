@@ -21,14 +21,19 @@ class LocationFormField extends StatelessWidget {
         const SizedBox(height: 12),
         TextFormField(
           controller: controller,
+          readOnly: true,
+          onTap: () {
+            // Focus on the map when text field is tapped
+            FocusScope.of(context).unfocus();
+          },
           validator: (value) {
             if (value == null || value.trim().isEmpty) {
-              return 'Please enter a location';
+              return 'Please select a location from the map';
             }
             return null;
           },
           decoration: InputDecoration(
-            hintText: 'High level road, Maharagama, Sri Lanka',
+            hintText: 'Select location from map',
             filled: true,
             fillColor: Colors.white,
             border: OutlineInputBorder(
@@ -40,7 +45,7 @@ class LocationFormField extends StatelessWidget {
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide:  BorderSide(
+              borderSide: BorderSide(
                 color: Colors.grey.shade300,
                 width: 1.0,
               ),

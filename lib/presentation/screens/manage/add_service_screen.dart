@@ -30,7 +30,7 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
     '45min',
     '60min',
     '90min',
-    '120min'
+    '120min',
   ];
 
   final List<String> _genderOptions = ['Unisex', 'Male', 'Female', 'Both'];
@@ -112,8 +112,10 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                leading:
-                const Icon(Icons.photo_library, color: Color(0xFF0BA5E9)),
+                leading: const Icon(
+                  Icons.photo_library,
+                  color: Color(0xFF0BA5E9),
+                ),
                 title: const Text('Gallery'),
                 onTap: () {
                   Navigator.pop(context);
@@ -447,120 +449,122 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
                     ),
                     child: _selectedImage != null
                         ? Stack(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Image.file(
-                            _selectedImage!,
-                            height: 140,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        Positioned(
-                          top: 8,
-                          right: 8,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.red.shade500,
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.2),
-                                  blurRadius: 8,
-                                  offset: const Offset(0, 2),
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: Image.file(
+                                  _selectedImage!,
+                                  height: 140,
+                                  width: double.infinity,
+                                  fit: BoxFit.cover,
                                 ),
-                              ],
-                            ),
-                            child: IconButton(
-                              icon: const Icon(
-                                Icons.delete_outline,
-                                color: Colors.white,
-                                size: 20,
                               ),
-                              onPressed: _removeImage,
-                              padding: const EdgeInsets.all(8),
-                              constraints: const BoxConstraints(),
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          bottom: 8,
-                          left: 8,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 6,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.black.withOpacity(0.7),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Icon(
-                                  Icons.check_circle,
-                                  color: Colors.white,
-                                  size: 16,
-                                ),
-                                const SizedBox(width: 6),
-                                Text(
-                                  _imageFileName ?? 'Image selected',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500,
+                              Positioned(
+                                top: 8,
+                                right: 8,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.red.shade500,
+                                    shape: BoxShape.circle,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.2),
+                                        blurRadius: 8,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
                                   ),
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
+                                  child: IconButton(
+                                    icon: const Icon(
+                                      Icons.delete_outline,
+                                      color: Colors.white,
+                                      size: 20,
+                                    ),
+                                    onPressed: _removeImage,
+                                    padding: const EdgeInsets.all(8),
+                                    constraints: const BoxConstraints(),
+                                  ),
                                 ),
-                              ],
+                              ),
+                              Positioned(
+                                bottom: 8,
+                                left: 8,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 6,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.black.withOpacity(0.7),
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Icon(
+                                        Icons.check_circle,
+                                        color: Colors.white,
+                                        size: 16,
+                                      ),
+                                      const SizedBox(width: 6),
+                                      Text(
+                                        _imageFileName ?? 'Image selected',
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+                        : InkWell(
+                            onTap: _showImageSourceDialog,
+                            borderRadius: BorderRadius.circular(12),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(vertical: 28),
+                              child: Column(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(16),
+                                    decoration: BoxDecoration(
+                                      color: const Color(
+                                        0xFF0BA5E9,
+                                      ).withOpacity(0.1),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: const Icon(
+                                      Icons.add_photo_alternate_rounded,
+                                      size: 40,
+                                      color: Color(0xFF0BA5E9),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  const Text(
+                                    'Add Service Image',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Color(0xFF1A1A1A),
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    'Gallery or Camera',
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      color: Colors.grey.shade600,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    )
-                        : InkWell(
-                      onTap: _showImageSourceDialog,
-                      borderRadius: BorderRadius.circular(12),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 28),
-                        child: Column(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(16),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFF0BA5E9).withOpacity(0.1),
-                                shape: BoxShape.circle,
-                              ),
-                              child: const Icon(
-                                Icons.add_photo_alternate_rounded,
-                                size: 40,
-                                color: Color(0xFF0BA5E9),
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            const Text(
-                              'Add Service Image',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Color(0xFF1A1A1A),
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              'Gallery or Camera',
-                              style: TextStyle(
-                                fontSize: 13,
-                                color: Colors.grey.shade600,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
                   ),
                   const SizedBox(height: 16),
                   TextFormField(

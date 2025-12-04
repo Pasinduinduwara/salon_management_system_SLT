@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'feedbacks-view-details.dart';
 import 'feedback-reply.dart';
+import '../../widgets/feedbacks/rating_summary_widget.dart';
+import '../../widgets/feedbacks/filter_buttons_widget.dart';
+import '../../widgets/feedbacks/feedback_card_widget.dart';
 
 class FeedbacksPage extends StatefulWidget {
   const FeedbacksPage({Key? key}) : super(key: key);
@@ -116,17 +119,46 @@ class _FeedbacksPageState extends State<FeedbacksPage> {
                 const SizedBox(height: 24),
                 
                 // Rating Summary Card
-                _buildRatingSummary(),
+                RatingSummaryWidget(
+                  overallRating: 4.7,
+                  reviewCount: 115,
+                  ratings: ratings,
+                ),
                 
                 const SizedBox(height: 24),
                 
                 // Filter Buttons
-                _buildFilterButtons(),
+                FilterButtonsWidget(
+                  selectedFilter: selectedFilter,
+                  onFilterSelected: (filter) {
+                    setState(() {
+                      selectedFilter = filter;
+                    });
+                  },
+                ),
                 
                 const SizedBox(height: 24),
                 
                 // Feedback List
-                ...filteredFeedbacks.map((feedback) => _buildFeedbackCard(feedback)).toList(),
+                ...filteredFeedbacks.map((feedback) => FeedbackCardWidget(
+                  feedback: feedback,
+                  onViewDetails: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const FeedbackDetailsPage(),
+                      ),
+                    );
+                  },
+                  onReply: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ReplyToFeedbackPage(),
+                      ),
+                    );
+                  },
+                )).toList(),
                 
                 const SizedBox(height: 24),
               ],

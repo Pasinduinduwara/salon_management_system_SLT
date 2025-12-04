@@ -3,11 +3,15 @@ import 'package:flutter/material.dart';
 class ConfirmPasswordFormField extends StatefulWidget {
   final TextEditingController controller;
   final TextEditingController passwordController;
+  final String? errorText;
+  final Function(String)? onChanged;
 
   const ConfirmPasswordFormField({
     super.key,
     required this.controller,
     required this.passwordController,
+    this.errorText,
+    this.onChanged,
   });
 
   @override
@@ -19,61 +23,74 @@ class _ConfirmPasswordFormFieldState extends State<ConfirmPasswordFormField> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 64,
-      child: TextFormField(
-        controller: widget.controller,
-        obscureText: _obscureConfirmPassword,
-        style: const TextStyle(
-          fontSize: 16,
-          color: Colors.black,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: widget.errorText != null
+                  ? Colors.red
+                  : const Color(0xFFE0E0E0),
+              width: 1,
+            ),
+          ),
+          child: TextFormField(
+            controller: widget.controller,
+            obscureText: _obscureConfirmPassword,
+            onChanged: widget.onChanged,
+            decoration: InputDecoration(
+              hintText: 'Confirm Your Password',
+              hintStyle: const TextStyle(
+                fontSize: 14,
+                color: Color(0xFFBDBDBD),
+                fontWeight: FontWeight.w400,
+              ),
+              filled: true,
+              fillColor: Colors.white,
+              border: InputBorder.none,
+              enabledBorder: InputBorder.none,
+              focusedBorder: InputBorder.none,
+              errorBorder: InputBorder.none,
+              focusedErrorBorder: InputBorder.none,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 16,
+              ),
+              suffixIcon: IconButton(
+                icon: Icon(
+                  _obscureConfirmPassword ? Icons.visibility_off : Icons.visibility,
+                  color: Colors.grey.shade400,
+                  size: 22,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _obscureConfirmPassword = !_obscureConfirmPassword;
+                  });
+                },
+              ),
+            ),
+            style: const TextStyle(
+              fontSize: 14,
+              color: Colors.black87,
+            ),
+          ),
         ),
-        decoration: InputDecoration(
-          hintText: 'Confirm Your Password',
-          hintStyle: const TextStyle(
-            fontSize: 16,
-            color: Color(0xFF616161), // Black38
-          ),
-          filled: true,
-          fillColor: Colors.white,
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-          errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(
-              color: Color(0xFFFF0000),
-              width: 1.5,
+        if (widget.errorText != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 6, left: 4),
+            child: Text(
+              widget.errorText!,
+              style: const TextStyle(
+                color: Colors.red,
+                fontSize: 12,
+                fontWeight: FontWeight.w400,
+              ),
             ),
           ),
-          focusedErrorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(
-              color: Color(0xFFFF0000),
-              width: 1.5,
-            ),
-          ),
-          suffixIcon: IconButton(
-            icon: Icon(
-              _obscureConfirmPassword ? Icons.visibility_off : Icons.visibility,
-              color: Colors.grey,
-            ),
-            onPressed: () {
-              setState(() {
-                _obscureConfirmPassword = !_obscureConfirmPassword;
-              });
-            },
-          ),
-        ),
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Please confirm your password';
-          }
-          if (value != widget.passwordController.text) {
-            return 'Passwords do not match';
-          }
-          return null;
-        },
-      ),
+      ],
     );
   }
 }

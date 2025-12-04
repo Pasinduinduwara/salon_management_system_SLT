@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:owner_salon_management/presentation/screens/auth/image_screen.dart';
 import 'package:owner_salon_management/presentation/screens/auth/widgets/location_form_field.dart';
-import 'package:owner_salon_management/presentation/screens/auth/widgets/map_view_placeholder.dart';
+import 'package:owner_salon_management/presentation/screens/auth/widgets/interactive_map_picker.dart';
 import 'package:owner_salon_management/presentation/screens/auth/widgets/salon_name_form_field.dart';
 import 'package:owner_salon_management/presentation/screens/auth/widgets/salon_type_dropdown.dart';
 import 'package:owner_salon_management/presentation/screens/auth/widgets/setup_account_app_bar.dart';
@@ -23,6 +24,8 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
   TimeOfDay startTime = const TimeOfDay(hour: 9, minute: 0);
   TimeOfDay endTime = const TimeOfDay(hour: 19, minute: 0);
   bool _isSubmitting = false;
+  LatLng? _selectedLocation;
+  String? _selectedAddress;
 
   final List<String> salonTypes = [
     'Unisex',
@@ -37,6 +40,14 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
     salonNameController.dispose();
     locationController.dispose();
     super.dispose();
+  }
+
+  void _onLocationSelected(LatLng location, String address) {
+    setState(() {
+      _selectedLocation = location;
+      _selectedAddress = address;
+      locationController.text = address;
+    });
   }
 
   void _showErrorSnackBar(String message) {
@@ -134,7 +145,11 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
                   const SizedBox(height: 24),
                   LocationFormField(controller: locationController),
                   const SizedBox(height: 16),
-                  const MapViewPlaceholder(),
+                  InteractiveMapPicker(
+                    onLocationSelected: _onLocationSelected,
+                    initialLocation: _selectedLocation,
+                    initialAddress: _selectedAddress,
+                  ),
                   const SizedBox(height: 40),
                   SetupAccountNextButton(
                     isSubmitting: _isSubmitting,

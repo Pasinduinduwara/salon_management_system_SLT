@@ -18,22 +18,40 @@ class _UploadSalonImageScreenState extends State<UploadSalonImageScreen> {
   void _finishSetup() {
     if (selectedImage != null) {
       debugPrint('Image uploaded: ${selectedImage!.path}');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Setup completed successfully!'),
-          backgroundColor: Color(0xFF00C853),
-        ),
-      );
+      _showSuccessSnackBar('Setup completed successfully!');
       // TODO: Navigate to home screen
       // Navigator.pushReplacementNamed(context, '/home');
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please select an image'),
-          backgroundColor: Color(0xFFFF0000),
-        ),
-      );
+      _showErrorSnackBar('Please select an image');
     }
+  }
+
+  void _showSuccessSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.green,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        margin: const EdgeInsets.all(16),
+      ),
+    );
+  }
+
+  void _showErrorSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        margin: const EdgeInsets.all(16),
+      ),
+    );
   }
 
   @override
@@ -50,13 +68,15 @@ class _UploadSalonImageScreenState extends State<UploadSalonImageScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text(
-                      'Upload Salon Image',
+                    Text(
+                      'Add a professional photo of your salon to attract more customers',
                       style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black87,
+                        fontSize: 14,
+                        color: Colors.grey.shade600,
+                        fontWeight: FontWeight.w400,
+                        height: 1.4,
                       ),
+                      textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 40),
                     ImagePickerBox(
@@ -69,6 +89,51 @@ class _UploadSalonImageScreenState extends State<UploadSalonImageScreen> {
                     ),
                     const SizedBox(height: 16),
                     FileInfoDisplay(selectedImage: selectedImage),
+                    const SizedBox(height: 24),
+                    // Image Guidelines
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF1565C0).withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: const Color(0xFF1565C0).withOpacity(0.3),
+                          width: 1,
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.info_outline,
+                                color: const Color(0xFF1565C0),
+                                size: 20,
+                              ),
+                              const SizedBox(width: 8),
+                              const Text(
+                                'Image Guidelines',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xFF1565C0),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            '• High-quality, well-lit photos\n• Show your salon\'s interior or exterior\n• No text or logos overlaid on image\n• Recommended size: 1080x720 pixels',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey.shade700,
+                              height: 1.4,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:owner_salon_management/presentation/screens/auth/register.dart';
 import 'package:owner_salon_management/presentation/screens/auth/widgets/forgot_password_link.dart';
+import 'package:owner_salon_management/presentation/screens/auth/widgets/email_form_field.dart';
+import 'package:owner_salon_management/presentation/screens/auth/widgets/password_form_field.dart';
+import 'package:owner_salon_management/presentation/screens/auth/widgets/login_button.dart';
 import 'package:owner_salon_management/presentation/screens/home/dashboard.dart';
 
-import '../../widgets/common/custom_button.dart';
-import '../../widgets/common/custom_text_input.dart';
 import '../lang/select_language.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -164,10 +165,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   const SizedBox(height: 32),
-                  CustomTextField(
+                  EmailFormField(
                     controller: _emailController,
-                    hintText: 'Enter Your Email',
-                    keyboardType: TextInputType.emailAddress,
                     errorText: _emailError,
                     onChanged: (value) {
                       if (_emailError != null) {
@@ -178,10 +177,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                   ),
                   const SizedBox(height: 16),
-                  CustomTextField(
+                  PasswordFormField(
                     controller: _passwordController,
-                    hintText: 'Enter Your Password',
-                    obscureText: true,
                     errorText: _passwordError,
                     onChanged: (value) {
                       if (_passwordError != null) {
@@ -194,8 +191,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   const ForgotPasswordLink(),
                   const SizedBox(height: 20),
-                  CustomButton(
-                    text: 'Login',
+                  LoginButton(
                     onPressed: _handleLogin,
                   ),
                   const SizedBox(height: 16),

@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:owner_salon_management/presentation/screens/auth/login_screen.dart';
 import 'package:owner_salon_management/presentation/screens/auth/set_up_account.dart';
+import 'package:owner_salon_management/presentation/screens/auth/widgets/email_form_field.dart';
+import 'package:owner_salon_management/presentation/screens/auth/widgets/password_form_field.dart';
+import 'package:owner_salon_management/presentation/screens/auth/widgets/confirm_password_form_field.dart';
+import 'package:owner_salon_management/presentation/screens/auth/widgets/phone_form_field.dart';
+import 'package:owner_salon_management/presentation/screens/auth/widgets/next_button.dart';
 import '../../widgets/common/custom_button.dart';
 import '../../widgets/common/custom_text_input.dart';
 
@@ -178,10 +183,8 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                     ),
                   ),
                   const SizedBox(height: 32),
-                  CustomTextField(
+                  EmailFormField(
                     controller: _emailController,
-                    hintText: 'Enter Your Email',
-                    keyboardType: TextInputType.emailAddress,
                     errorText: _emailError,
                     onChanged: (value) {
                       if (_emailError != null) {
@@ -192,10 +195,8 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                     },
                   ),
                   const SizedBox(height: 16),
-                  CustomTextField(
+                  PasswordFormField(
                     controller: _passwordController,
-                    hintText: 'Enter Your Password',
-                    obscureText: true,
                     errorText: _passwordError,
                     onChanged: (value) {
                       if (_passwordError != null) {
@@ -212,10 +213,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                     },
                   ),
                   const SizedBox(height: 16),
-                  CustomTextField(
+                  ConfirmPasswordFormField(
                     controller: _confirmPasswordController,
-                    hintText: 'Confirm Your Password',
-                    obscureText: true,
+                    passwordController: _passwordController,
                     errorText: _confirmPasswordError,
                     onChanged: (value) {
                       if (_confirmPasswordError != null) {
@@ -226,10 +226,8 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                     },
                   ),
                   const SizedBox(height: 16),
-                  CustomTextField(
+                  PhoneFormField(
                     controller: _phoneController,
-                    hintText: 'Enter Your Phone Number',
-                    keyboardType: TextInputType.phone,
                     errorText: _phoneError,
                     onChanged: (value) {
                       if (_phoneError != null) {
@@ -240,7 +238,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                     },
                   ),
                   const SizedBox(height: 24),
-                  CustomButton(text: 'Next', onPressed: _handleNext),
+                  NextButton(
+                    onPressed: _handleNext,
+                  ),
                 ],
               ),
             ),

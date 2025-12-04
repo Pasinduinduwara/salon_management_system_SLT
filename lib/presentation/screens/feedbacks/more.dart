@@ -9,69 +9,108 @@ class MorePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        backgroundColor: Colors.white,
-        elevation: 0,
-        // leading: IconButton(
-        //   onPressed: () => Navigator.pop(context),
-        //   icon: const Icon(Icons.arrow_back, color: Colors.black, size: 28),
-        // ),
-        title: const Text(
-          'More',
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
-          ),
-        ),
-        centerTitle: true,
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
-          child: Column(
-            children: [
-              const SizedBox(height: 40),
-              // Feedbacks Menu Item
-              _buildMenuItem(
-                context: context,
-                icon: Icons.chat_bubble_outline,
-                title: 'Feedbacks',
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const FeedbacksPage(),
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(height: 24),
-              // Promotions Menu Item
-              _buildMenuItem(
-                context: context,
-                icon: Icons.campaign_outlined,
-                title: 'Promotions',
-                onTap: () {
-                  // Navigate to Promotions page
-                },
-              ),
-
-            ],
-          ),
-        ),
-      ),
+      appBar: const MoreAppBar(),
+      body: const MoreBody(),
       bottomNavigationBar: const BottomNavBar(currentIndex: 3),
     );
   }
+}
 
-  Widget _buildMenuItem({
-    required BuildContext context,
-    required IconData icon,
-    required String title,
-    required VoidCallback onTap,
-  }) {
+class MoreAppBar extends StatelessWidget implements PreferredSizeWidget {
+  const MoreAppBar({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      automaticallyImplyLeading: false,
+      backgroundColor: Colors.white,
+      elevation: 0,
+      title: const Text(
+        'More',
+        style: TextStyle(
+          fontSize: 22,
+          fontWeight: FontWeight.bold,
+          color: Colors.black,
+        ),
+      ),
+      centerTitle: true,
+    );
+  }
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+}
+
+class MoreBody extends StatelessWidget {
+  const MoreBody({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+        child: Column(
+          children: const [
+            SizedBox(height: 40),
+            FeedbacksMenuItem(),
+            SizedBox(height: 24),
+            PromotionsMenuItem(),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class FeedbacksMenuItem extends StatelessWidget {
+  const FeedbacksMenuItem({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MenuItemWidget(
+      icon: Icons.chat_bubble_outline,
+      title: 'Feedbacks',
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const FeedbacksPage(),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class PromotionsMenuItem extends StatelessWidget {
+  const PromotionsMenuItem({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MenuItemWidget(
+      icon: Icons.campaign_outlined,
+      title: 'Promotions',
+      onTap: () {
+        // Navigate to Promotions page
+      },
+    );
+  }
+}
+
+class MenuItemWidget extends StatelessWidget {
+  const MenuItemWidget({
+    Key? key,
+    required this.icon,
+    required this.title,
+    required this.onTap,
+  }) : super(key: key);
+
+  final IconData icon;
+  final String title;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
@@ -88,41 +127,74 @@ class MorePage extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: const Color(0xFF1565C0).withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Icon(
-                icon,
-                color: const Color(0xFF1565C0),
-                size: 24,
-              ),
-            ),
+            MenuIconContainer(icon: icon),
             const SizedBox(width: 16),
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: Colors.black87,
-              ),
-            ),
+            MenuTitleText(title: title),
             const Spacer(),
-            Icon(
-              Icons.arrow_forward_ios,
-              color: Colors.grey.shade400,
-              size: 18,
-            ),
+            const MenuArrowIcon(),
           ],
         ),
       ),
     );
   }
+}
 
+class MenuIconContainer extends StatelessWidget {
+  const MenuIconContainer({
+    Key? key,
+    required this.icon,
+  }) : super(key: key);
 
+  final IconData icon;
 
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 40,
+      height: 40,
+      decoration: BoxDecoration(
+        color: const Color(0xFF1565C0).withOpacity(0.1),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Icon(
+        icon,
+        color: const Color(0xFF1565C0),
+        size: 24,
+      ),
+    );
+  }
+}
 
+class MenuTitleText extends StatelessWidget {
+  const MenuTitleText({
+    Key? key,
+    required this.title,
+  }) : super(key: key);
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      title,
+      style: const TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w500,
+        color: Colors.black87,
+      ),
+    );
+  }
+}
+
+class MenuArrowIcon extends StatelessWidget {
+  const MenuArrowIcon({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Icon(
+      Icons.arrow_forward_ios,
+      color: Colors.grey.shade400,
+      size: 18,
+    );
+  }
 }
