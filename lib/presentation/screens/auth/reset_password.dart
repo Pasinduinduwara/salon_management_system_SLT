@@ -5,6 +5,7 @@ import 'package:owner_salon_management/presentation/screens/auth/widgets/passwor
 import 'package:owner_salon_management/presentation/screens/auth/widgets/reset_password_app_bar.dart';
 import 'package:owner_salon_management/presentation/screens/auth/widgets/reset_password_button.dart';
 import 'package:owner_salon_management/presentation/screens/auth/widgets/reset_password_header.dart';
+import 'package:owner_salon_management/presentation/screens/home/dashboard.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
   const ResetPasswordScreen({super.key});
@@ -86,9 +87,12 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                             backgroundColor: Color(0xFF4CAF50),
                           ),
                         );
-                        // Navigate back to login after a short delay
+                        // Navigate to dashboard after successful password reset
                         Future.delayed(const Duration(seconds: 1), () {
-                          Navigator.popUntil(context, (route) => route.isFirst);
+                          Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(builder: (context) => const Dashboard()),
+                            (route) => false,
+                          );
                         });
                       }
                     },

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
+import 'web_map_picker.dart';
 
 class InteractiveMapPicker extends StatefulWidget {
   final Function(LatLng, String) onLocationSelected;
@@ -178,6 +180,19 @@ class _InteractiveMapPickerState extends State<InteractiveMapPicker> {
 
   @override
   Widget build(BuildContext context) {
+    // Show web picker for web platform
+    if (kIsWeb) {
+      return WebMapPicker(
+        onLocationSelected: (address) {
+          // For web, we'll use a default location with the entered address
+          final defaultLocation = const LatLng(6.9271, 79.8612); // Colombo
+          widget.onLocationSelected(defaultLocation, address);
+        },
+        initialAddress: widget.initialAddress,
+      );
+    }
+
+    // Mobile map implementation
     return Container(
       height: 300,
       decoration: BoxDecoration(

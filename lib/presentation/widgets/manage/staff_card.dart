@@ -7,11 +7,8 @@ class StaffCard extends StatelessWidget {
   final StaffModel staff;
   final VoidCallback? onDelete;
 
-  const StaffCard({
-    Key? key,
-    required this.staff,
-    this.onDelete,
-  }) : super(key: key);
+  const StaffCard({Key? key, required this.staff, this.onDelete})
+    : super(key: key);
 
   void _showDeleteConfirmation(BuildContext context) {
     showDialog(
@@ -23,10 +20,7 @@ class StaffCard extends StatelessWidget {
           ),
           title: const Text(
             'Delete Staff Member',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-            ),
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
           ),
           content: Text(
             'Are you sure you want to delete "${staff.name}"?',
@@ -141,7 +135,10 @@ class StaffCard extends StatelessWidget {
                   Row(
                     children: [
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 3,
+                        ),
                         decoration: BoxDecoration(
                           color: const Color(0xFFFCE4EC),
                           borderRadius: BorderRadius.circular(4),
@@ -157,7 +154,10 @@ class StaffCard extends StatelessWidget {
                       ),
                       const SizedBox(width: 8),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 3,
+                        ),
                         decoration: BoxDecoration(
                           color: staff.isAvailable
                               ? const Color(0xFFE8F5E9)
@@ -193,7 +193,9 @@ class StaffCard extends StatelessWidget {
                         Expanded(
                           child: Text(
                             staff.services.take(2).join(', ') +
-                                (staff.services.length > 2 ? ' +${staff.services.length - 2}' : ''),
+                                (staff.services.length > 2
+                                    ? ' +${staff.services.length - 2}'
+                                    : ''),
                             style: const TextStyle(
                               fontSize: 12,
                               color: Color(0xFF757575),
@@ -237,7 +239,10 @@ class StaffCard extends StatelessWidget {
                         style: OutlinedButton.styleFrom(
                           foregroundColor: const Color(0xFFEF5350),
                           side: const BorderSide(color: Color(0xFFFFCDD2)),
-                          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 6,
+                            horizontal: 12,
+                          ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
@@ -265,12 +270,7 @@ class StaffCard extends StatelessWidget {
   Widget _buildPhoto() {
     // If local file exists, use it (newly added staff)
     if (staff.photo != null) {
-      return Image.file(
-        staff.photo!,
-        height: 60,
-        width: 60,
-        fit: BoxFit.cover,
-      );
+      return Image.file(staff.photo!, height: 60, width: 60, fit: BoxFit.cover);
     }
 
     // If photoPath is a URL, use network image
@@ -286,7 +286,7 @@ class StaffCard extends StatelessWidget {
             child: CircularProgressIndicator(
               value: loadingProgress.expectedTotalBytes != null
                   ? loadingProgress.cumulativeBytesLoaded /
-                  loadingProgress.expectedTotalBytes!
+                        loadingProgress.expectedTotalBytes!
                   : null,
               strokeWidth: 2,
               color: Colors.blue.shade900,
@@ -294,11 +294,7 @@ class StaffCard extends StatelessWidget {
           );
         },
         errorBuilder: (context, error, stackTrace) {
-          return Icon(
-            Icons.person,
-            size: 30,
-            color: Colors.grey.shade400,
-          );
+          return Icon(Icons.person, size: 30, color: Colors.grey.shade400);
         },
       );
     }
@@ -311,20 +307,12 @@ class StaffCard extends StatelessWidget {
         width: 60,
         fit: BoxFit.cover,
         errorBuilder: (context, error, stackTrace) {
-          return Icon(
-            Icons.person,
-            size: 30,
-            color: Colors.grey.shade400,
-          );
+          return Icon(Icons.person, size: 30, color: Colors.grey.shade400);
         },
       );
     }
 
     // No photo available, show placeholder
-    return Icon(
-      Icons.person,
-      size: 30,
-      color: Colors.grey.shade400,
-    );
+    return Icon(Icons.person, size: 30, color: Colors.grey.shade400);
   }
 }

@@ -1,9 +1,12 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:owner_salon_management/presentation/screens/auth/widgets/file_info_display.dart';
 import 'package:owner_salon_management/presentation/screens/auth/widgets/finish_setup_button.dart';
 import 'package:owner_salon_management/presentation/screens/auth/widgets/image_picker_box.dart';
 import 'package:owner_salon_management/presentation/screens/auth/widgets/upload_image_app_bar.dart';
+import 'package:owner_salon_management/presentation/screens/auth/widgets/interactive_map_picker.dart';
+import 'package:owner_salon_management/presentation/screens/home/dashboard.dart';
 
 class UploadSalonImageScreen extends StatefulWidget {
   const UploadSalonImageScreen({super.key});
@@ -14,16 +17,57 @@ class UploadSalonImageScreen extends StatefulWidget {
 
 class _UploadSalonImageScreenState extends State<UploadSalonImageScreen> {
   File? selectedImage;
+  LatLng? _selectedLocation;
+  String? _selectedAddress;
+
+  void _onLocationSelected(LatLng location, String address) {
+    setState(() {
+      _selectedLocation = location;
+      _selectedAddress = address;
+    });
+    debugPrint('Location selected: $location, Address: $address');
+  }
 
   void _finishSetup() {
-    if (selectedImage != null) {
-      debugPrint('Image uploaded: ${selectedImage!.path}');
-      _showSuccessSnackBar('Setup completed successfully!');
-      // TODO: Navigate to home screen
-      // Navigator.pushReplacementNamed(context, '/home');
-    } else {
+    // Validate image selection
+    if (selectedImage == null) {
       _showErrorSnackBar('Please select an image');
+      return;
     }
+    
+    // Validate image file
+    if (!_isValidImageFile(selectedImage!)) {
+      _showErrorSnackBar('Please select a valid image file (JPG, PNG, or GIF)');
+      return;
+    }
+    
+    // Validate location selection (both coordinates and address)
+    if (_selectedLocation == null) {
+      _showErrorSnackBar('Please select your salon location from the map');
+      return;
+    }
+    
+    if (_selectedAddress == null || _selectedAddress!.isEmpty) {
+      _showErrorSnackBar('Please ensure a valid address is selected');
+      return;
+    }
+    
+    // All validations passed
+    debugPrint('Image uploaded: ${selectedImage!.path}');
+    debugPrint('Location: $_selectedLocation, Address: $_selectedAddress');
+    _showSuccessSnackBar('Setup completed successfully!');
+    // Navigate to dashboard after successful setup
+    Future.delayed(const Duration(seconds: 1), () {
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => const Dashboard()),
+        (route) => false,
+      );
+    });
+  }
+
+  bool _isValidImageFile(File file) {
+    final extension = file.path.split('.').last.toLowerCase();
+    return ['jpg', 'jpeg', 'png', 'gif'].contains(extension);
   }
 
   void _showSuccessSnackBar(String message) {
@@ -89,6 +133,31 @@ class _UploadSalonImageScreenState extends State<UploadSalonImageScreen> {
                     ),
                     const SizedBox(height: 16),
                     FileInfoDisplay(selectedImage: selectedImage),
+                    const SizedBox(height: 24),
+                    // Salon Location Section
+                    const Text(
+                      'Salon Location',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      _selectedAddress ?? 'Select your salon location from the map',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: _selectedAddress != null ? Colors.black87 : Colors.grey.shade600,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    InteractiveMapPicker(
+                      onLocationSelected: _onLocationSelected,
+                      initialLocation: _selectedLocation,
+                      initialAddress: _selectedAddress,
+                    ),
                     const SizedBox(height: 24),
                     // Image Guidelines
                     Container(
