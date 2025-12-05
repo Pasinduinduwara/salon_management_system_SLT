@@ -1,12 +1,11 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:owner_salon_management/presentation/screens/auth/widgets/file_info_display.dart';
 import 'package:owner_salon_management/presentation/screens/auth/widgets/finish_setup_button.dart';
 import 'package:owner_salon_management/presentation/screens/auth/widgets/image_picker_box.dart';
 import 'package:owner_salon_management/presentation/screens/auth/widgets/upload_image_app_bar.dart';
-import 'package:owner_salon_management/presentation/screens/auth/widgets/interactive_map_picker.dart';
 import 'package:owner_salon_management/presentation/screens/home/dashboard.dart';
+import 'package:image_picker/image_picker.dart';
 
 class UploadSalonImageScreen extends StatefulWidget {
   const UploadSalonImageScreen({super.key});
@@ -17,16 +16,7 @@ class UploadSalonImageScreen extends StatefulWidget {
 
 class _UploadSalonImageScreenState extends State<UploadSalonImageScreen> {
   File? selectedImage;
-  LatLng? _selectedLocation;
-  String? _selectedAddress;
-
-  void _onLocationSelected(LatLng location, String address) {
-    setState(() {
-      _selectedLocation = location;
-      _selectedAddress = address;
-    });
-    debugPrint('Location selected: $location, Address: $address');
-  }
+  final ImagePicker _picker = ImagePicker();
 
   void _finishSetup() {
     // Validate image selection
@@ -34,33 +24,22 @@ class _UploadSalonImageScreenState extends State<UploadSalonImageScreen> {
       _showErrorSnackBar('Please select an image');
       return;
     }
-    
+
     // Validate image file
     if (!_isValidImageFile(selectedImage!)) {
       _showErrorSnackBar('Please select a valid image file (JPG, PNG, or GIF)');
       return;
     }
-    
-    // Validate location selection (both coordinates and address)
-    if (_selectedLocation == null) {
-      _showErrorSnackBar('Please select your salon location from the map');
-      return;
-    }
-    
-    if (_selectedAddress == null || _selectedAddress!.isEmpty) {
-      _showErrorSnackBar('Please ensure a valid address is selected');
-      return;
-    }
-    
+
     // All validations passed
     debugPrint('Image uploaded: ${selectedImage!.path}');
-    debugPrint('Location: $_selectedLocation, Address: $_selectedAddress');
     _showSuccessSnackBar('Setup completed successfully!');
+
     // Navigate to dashboard after successful setup
     Future.delayed(const Duration(seconds: 1), () {
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) => const Dashboard()),
-        (route) => false,
+            (route) => false,
       );
     });
   }
@@ -68,6 +47,125 @@ class _UploadSalonImageScreenState extends State<UploadSalonImageScreen> {
   bool _isValidImageFile(File file) {
     final extension = file.path.split('.').last.toLowerCase();
     return ['jpg', 'jpeg', 'png', 'gif'].contains(extension);
+  }
+
+  Future<void> _showImageSourceDialog() async {
+    return showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
+          ),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 20),
+            Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.grey.shade300,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            const SizedBox(height: 24),
+            const Text(
+              'Select Image Source',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: Colors.black87,
+              ),
+            ),
+            const SizedBox(height: 24),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: Row(
+                children: [
+                  // Camera Option
+                  Expanded(
+                    child: _ImageSourceOption(
+                      icon: Icons.camera_alt_outlined,
+                      label: 'Camera',
+                      onTap: () {
+                        Navigator.pop(context);
+                        _pickImage(ImageSource.camera);
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  // Gallery Option
+                  Expanded(
+                    child: _ImageSourceOption(
+                      icon: Icons.photo_library_outlined,
+                      label: 'Gallery',
+                      onTap: () {
+                        Navigator.pop(context);
+                        _pickImage(ImageSource.gallery);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 32),
+            // Cancel Button
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: SizedBox(
+                width: double.infinity,
+                height: 56,
+                child: OutlinedButton(
+                  onPressed: () => Navigator.pop(context),
+                  style: OutlinedButton.styleFrom(
+                    backgroundColor: const Color(0xFFF5F5F5),
+                    foregroundColor: Colors.black87,
+                    side: BorderSide(
+                      color: Colors.grey.shade300,
+                      width: 1.5,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Text(
+                    'Cancel',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 32),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _pickImage(ImageSource source) async {
+    try {
+      final XFile? image = await _picker.pickImage(
+        source: source,
+        imageQuality: 80,
+      );
+
+      if (image != null) {
+        setState(() {
+          selectedImage = File(image.path);
+        });
+      }
+    } catch (e) {
+      debugPrint('Error picking image: $e');
+      _showErrorSnackBar('Failed to pick image. Please try again.');
+    }
   }
 
   void _showSuccessSnackBar(String message) {
@@ -101,7 +199,7 @@ class _UploadSalonImageScreenState extends State<UploadSalonImageScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFECECEC),
+      backgroundColor:Colors.white,
       appBar: const UploadImageAppBar(),
       body: SafeArea(
         child: Column(
@@ -132,31 +230,9 @@ class _UploadSalonImageScreenState extends State<UploadSalonImageScreen> {
                       },
                     ),
                     const SizedBox(height: 16),
-                    FileInfoDisplay(selectedImage: selectedImage),
-                    const SizedBox(height: 24),
-                    // Salon Location Section
-                    const Text(
-                      'Salon Location',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black87,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      _selectedAddress ?? 'Select your salon location from the map',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: _selectedAddress != null ? Colors.black87 : Colors.grey.shade600,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    InteractiveMapPicker(
-                      onLocationSelected: _onLocationSelected,
-                      initialLocation: _selectedLocation,
-                      initialAddress: _selectedAddress,
+                    FileInfoDisplay(
+                      selectedImage: selectedImage,
+                      onChooseFile: _showImageSourceDialog,
                     ),
                     const SizedBox(height: 24),
                     // Image Guidelines
@@ -210,6 +286,55 @@ class _UploadSalonImageScreenState extends State<UploadSalonImageScreen> {
             Padding(
               padding: const EdgeInsets.all(24.0),
               child: FinishSetupButton(onPressed: _finishSetup),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ImageSourceOption extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+
+  const _ImageSourceOption({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 100,
+        decoration: BoxDecoration(
+          color: const Color(0xFF1565C0).withOpacity(0.1),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: const Color(0xFF1565C0).withOpacity(0.3),
+            width: 1.5,
+          ),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              color: const Color(0xFF1565C0),
+              size: 32,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              label,
+              style: const TextStyle(
+                fontSize: 14,
+                color: Color(0xFF1565C0),
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ],
         ),

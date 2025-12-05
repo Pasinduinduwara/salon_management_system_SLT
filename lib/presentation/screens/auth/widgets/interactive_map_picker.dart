@@ -27,6 +27,7 @@ class _InteractiveMapPickerState extends State<InteractiveMapPicker> {
   String? _selectedAddress;
   Set<Marker> _markers = {};
   bool _isLoading = false;
+  bool _mapReady = false;
 
   // Default location (Colombo, Sri Lanka)
   static const LatLng _defaultLocation = LatLng(6.9271, 79.8612);
@@ -36,42 +37,60 @@ class _InteractiveMapPickerState extends State<InteractiveMapPicker> {
     super.initState();
     _selectedLocation = widget.initialLocation ?? _defaultLocation;
     _selectedAddress = widget.initialAddress;
-    _getCurrentLocation();
     _updateMarker();
-    _getAddressFromCoordinates();
+    if (_selectedAddress == null) {
+      _getAddressFromCoordinates();
+    }
+    // Only try to get current location if we don't have an initial location
+    if (widget.initialLocation == null) {
+      _getCurrentLocation();
+    }
   }
 
   Future<void> _getCurrentLocation() async {
     try {
       setState(() => _isLoading = true);
-      
+
+      // Check if location services are enabled
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
-        await Geolocator.openLocationSettings();
+        setState(() => _isLoading = false);
+        _showInfoSnackBar('Location services are disabled. Tap on the map to select location.');
         return;
       }
 
+      // Check permissions
       LocationPermission permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
-          _showErrorSnackBar('Location permissions are denied');
+          setState(() => _isLoading = false);
+          _showInfoSnackBar('Location permission denied. Tap on the map to select location.');
           return;
         }
       }
 
       if (permission == LocationPermission.deniedForever) {
-        _showErrorSnackBar('Location permissions are permanently denied');
+        setState(() => _isLoading = false);
+        _showInfoSnackBar('Please enable location permission in settings. You can still tap on the map to select location.');
         return;
       }
 
+      // Get current position
       Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
+        timeLimit: const Duration(seconds: 10),
       );
 
       final currentLocation = LatLng(position.latitude, position.longitude);
-      
-      if (_mapController != null) {
+
+      setState(() {
+        _selectedLocation = currentLocation;
+        _isLoading = false;
+      });
+
+      // Animate to current location
+      if (_mapController != null && _mapReady) {
         _mapController!.animateCamera(
           CameraUpdate.newCameraPosition(
             CameraPosition(target: currentLocation, zoom: 15),
@@ -79,17 +98,13 @@ class _InteractiveMapPickerState extends State<InteractiveMapPicker> {
         );
       }
 
-      setState(() {
-        _selectedLocation = currentLocation;
-        _isLoading = false;
-      });
-
       _updateMarker();
       await _getAddressFromCoordinates();
 
     } catch (e) {
       setState(() => _isLoading = false);
-      _showErrorSnackBar('Failed to get current location: $e');
+      debugPrint('Error getting location: $e');
+      _showInfoSnackBar('Could not get current location. Tap on the map to select location.');
     }
   }
 
@@ -104,8 +119,12 @@ class _InteractiveMapPickerState extends State<InteractiveMapPicker> {
 
       if (placemarks.isNotEmpty) {
         Placemark place = placemarks[0];
-        String address = '${place.street}, ${place.locality}, ${place.country}';
-        
+        String address = [
+          if (place.street != null && place.street!.isNotEmpty) place.street,
+          if (place.locality != null && place.locality!.isNotEmpty) place.locality,
+          if (place.country != null && place.country!.isNotEmpty) place.country,
+        ].join(', ');
+
         setState(() {
           _selectedAddress = address;
         });
@@ -114,6 +133,12 @@ class _InteractiveMapPickerState extends State<InteractiveMapPicker> {
       }
     } catch (e) {
       debugPrint('Error getting address: $e');
+      // Use coordinates as fallback
+      String fallbackAddress = '${_selectedLocation!.latitude.toStringAsFixed(4)}, ${_selectedLocation!.longitude.toStringAsFixed(4)}';
+      setState(() {
+        _selectedAddress = fallbackAddress;
+      });
+      widget.onLocationSelected(_selectedLocation!, fallbackAddress);
     }
   }
 
@@ -136,6 +161,8 @@ class _InteractiveMapPickerState extends State<InteractiveMapPicker> {
   }
 
   void _onMapTap(LatLng location) {
+    debugPrint('Map tapped at: ${location.latitude}, ${location.longitude}');
+
     setState(() {
       _selectedLocation = location;
     });
@@ -144,38 +171,55 @@ class _InteractiveMapPickerState extends State<InteractiveMapPicker> {
     _getAddressFromCoordinates();
 
     // Animate camera to selected location
-    _mapController?.animateCamera(
-      CameraUpdate.newCameraPosition(
-        CameraPosition(target: location, zoom: 15),
-      ),
-    );
-  }
-
-  void _onMapCreated(GoogleMapController controller) {
-    _mapController = controller;
-    
-    // Move to initial location
-    if (_selectedLocation != null) {
-      controller.animateCamera(
+    if (_mapController != null && _mapReady) {
+      _mapController!.animateCamera(
         CameraUpdate.newCameraPosition(
-          CameraPosition(target: _selectedLocation!, zoom: 15),
+          CameraPosition(target: location, zoom: 15),
         ),
       );
     }
   }
 
-  void _showErrorSnackBar(String message) {
+  void _onMapCreated(GoogleMapController controller) {
+    debugPrint('Map created successfully');
+    _mapController = controller;
+
+    setState(() {
+      _mapReady = true;
+    });
+
+    // Move to initial location after a short delay
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (_selectedLocation != null && mounted) {
+        controller.animateCamera(
+          CameraUpdate.newCameraPosition(
+            CameraPosition(target: _selectedLocation!, zoom: 15),
+          ),
+        );
+      }
+    });
+  }
+
+  void _showInfoSnackBar(String message) {
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: Colors.red,
+        backgroundColor: Colors.blue.shade700,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),
         margin: const EdgeInsets.all(16),
+        duration: const Duration(seconds: 4),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _mapController?.dispose();
+    super.dispose();
   }
 
   @override
@@ -218,8 +262,14 @@ class _InteractiveMapPickerState extends State<InteractiveMapPicker> {
               myLocationButtonEnabled: true,
               zoomControlsEnabled: true,
               mapToolbarEnabled: false,
+              compassEnabled: true,
+              rotateGesturesEnabled: true,
+              scrollGesturesEnabled: true,
+              tiltGesturesEnabled: true,
+              zoomGesturesEnabled: true,
+              liteModeEnabled: false, // Make sure lite mode is disabled
             ),
-            
+
             // Loading indicator
             if (_isLoading)
               Container(
@@ -230,7 +280,7 @@ class _InteractiveMapPickerState extends State<InteractiveMapPicker> {
                   ),
                 ),
               ),
-            
+
             // Address display
             if (_selectedAddress != null && !_isLoading)
               Positioned(
@@ -274,7 +324,7 @@ class _InteractiveMapPickerState extends State<InteractiveMapPicker> {
                   ),
                 ),
               ),
-            
+
             // Instructions
             if (!_isLoading)
               Positioned(

@@ -6,7 +6,7 @@ class UploadImageAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: const Color(0xFFECECEC),
+      backgroundColor:Colors.white,
       elevation: 0,
       leading: IconButton(
         onPressed: () => Navigator.pop(context),
