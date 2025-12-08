@@ -116,7 +116,7 @@ class _ManageScreenState extends State<ManageScreen> {
         elevation: 0,
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.white,
-        title: Text(
+        title:const Text(
           'Manage',
           style: TextStyle(
             fontWeight: FontWeight.bold,
@@ -127,142 +127,145 @@ class _ManageScreenState extends State<ManageScreen> {
         ),
       ),
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF5F5F5),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: _buildTabButton(
-                        icon: Icons.business_center_outlined,
-                        label: 'Services',
-                        isSelected: isServicesTab,
-                        onTap: () => setState(() => isServicesTab = true),
-                      ),
-                    ),
-                    Expanded(
-                      child: _buildTabButton(
-                        icon: Icons.people_outline,
-                        label: 'Staff',
-                        isSelected: !isServicesTab,
-                        onTap: () => setState(() => isServicesTab = false),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: isServicesTab
-                      ? 'Search services...'
-                      : 'Search professionals...',
-                  hintStyle: const TextStyle(color: Color(0xFF9E9E9E)),
-                  prefixIcon: const Icon(
-                    Icons.search,
-                    color: Color(0xFF9E9E9E),
-                  ),
-                  filled: true,
-                  fillColor: const Color(0xFFF5F5F5),
-                  border: OutlineInputBorder(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF5F5F5),
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none,
                   ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 14,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: SizedBox(
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  onPressed: () async {
-                    if (isServicesTab) {
-                      // Show Add Service Dialog
-                      final newService = await showDialog<ServiceModel>(
-                        context: context,
-                        builder: (context) => const AddServiceScreen(),
-                      );
-
-                      // Add the new service to the list if returned
-                      if (newService != null) {
-                        setState(() {
-                          services.add(newService);
-                        });
-                      }
-                    } else {
-                      // Navigate to Add Staff Screen
-                      final serviceNames = services.map((s) => s.name).toList();
-                      final newStaff = await Navigator.push<StaffModel>(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              AddStaffScreen(availableServices: serviceNames),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: _buildTabButton(
+                          icon: Icons.business_center_outlined,
+                          label: 'Services',
+                          isSelected: isServicesTab,
+                          onTap: () => setState(() => isServicesTab = true),
                         ),
-                      );
-
-                      // Add the new staff to the list if returned
-                      if (newStaff != null) {
-                        setState(() {
-                          staff.add(newStaff);
-                        });
-                      }
-                    }
-                  },
-                  icon: const Icon(Icons.add),
-                  label: Text(
-                    isServicesTab ? 'Add Service' : 'Add Professional',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue.shade900,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    elevation: 0,
+                      ),
+                      Expanded(
+                        child: _buildTabButton(
+                          icon: Icons.people_outline,
+                          label: 'Staff',
+                          isSelected: !isServicesTab,
+                          onTap: () => setState(() => isServicesTab = false),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
-            ),
-            const SizedBox(height: 20),
-            Expanded(
-              child: isServicesTab
-                  ? ListView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                itemCount: services.length,
-                itemBuilder: (context, index) {
-                  return ServiceCard(service: services[index]);
-                },
-              )
-                  : ListView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                itemCount: staff.length,
-                itemBuilder: (context, index) {
-                  return StaffCard(staff: staff[index]);
-                },
+              const SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: isServicesTab
+                        ? 'Search services...'
+                        : 'Search professionals...',
+                    hintStyle: const TextStyle(color: Color(0xFF9E9E9E)),
+                    prefixIcon: const Icon(
+                      Icons.search,
+                      color: Color(0xFF9E9E9E),
+                    ),
+                    filled: true,
+                    fillColor: const Color(0xFFF5F5F5),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 14,
+                    ),
+                  ),
+                ),
               ),
-            ),
-          ],
+              const SizedBox(height: 16),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    onPressed: () async {
+                      if (isServicesTab) {
+                        // Show Add Service Dialog
+                        final newService = await showDialog<ServiceModel>(
+                          context: context,
+                          builder: (context) => const AddServiceScreen(),
+                        );
+
+                        // Add the new service to the list if returned
+                        if (newService != null) {
+                          setState(() {
+                            services.add(newService);
+                          });
+                        }
+                      } else {
+                        // Navigate to Add Staff Screen
+                        final serviceNames = services.map((s) => s.name).toList();
+                        final newStaff = await Navigator.push<StaffModel>(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                AddStaffScreen(availableServices: serviceNames),
+                          ),
+                        );
+
+                        // Add the new staff to the list if returned
+                        if (newStaff != null) {
+                          setState(() {
+                            staff.add(newStaff);
+                          });
+                        }
+                      }
+                    },
+                    icon: const Icon(Icons.add),
+                    label: Text(
+                      isServicesTab ? 'Add Service' : 'Add Professional',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue.shade900,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      elevation: 0,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Expanded(
+                child: isServicesTab
+                    ? ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  itemCount: services.length,
+                  itemBuilder: (context, index) {
+                    return ServiceCard(service: services[index]);
+                  },
+                )
+                    : ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  itemCount: staff.length,
+                  itemBuilder: (context, index) {
+                    return StaffCard(staff: staff[index]);
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: const BottomNavBar(currentIndex: 2),

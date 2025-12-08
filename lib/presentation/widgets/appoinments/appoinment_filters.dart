@@ -43,21 +43,21 @@ class AppointmentFilters extends StatelessWidget {
             color: isSelected ? Colors.transparent : Colors.grey[300]!,
             width: 1.5,
           ),
-          boxShadow: isSelected
-              ? [
-            BoxShadow(
-              color: AppColors.primaryBlue.withOpacity(0.4),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
-            )
-          ]
-              : [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
+          // boxShadow: isSelected
+          //     ? [
+          //   // BoxShadow(
+          //   //   color: AppColors.primaryBlue.withOpacity(0.4),
+          //   //   blurRadius: 12,
+          //   //   offset: const Offset(0, 4),
+          //   // )
+          // ]
+          //     : [
+          //   BoxShadow(
+          //     color: Colors.black.withOpacity(0.05),
+          //     blurRadius: 8,
+          //     offset: const Offset(0, 2),
+          //   ),
+          // ],
         ),
         child: Center(
           child: Text(

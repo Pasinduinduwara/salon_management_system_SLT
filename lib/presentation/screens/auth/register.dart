@@ -6,8 +6,6 @@ import 'package:owner_salon_management/presentation/screens/auth/widgets/passwor
 import 'package:owner_salon_management/presentation/screens/auth/widgets/confirm_password_form_field.dart';
 import 'package:owner_salon_management/presentation/screens/auth/widgets/phone_form_field.dart';
 import 'package:owner_salon_management/presentation/screens/auth/widgets/next_button.dart';
-import '../../widgets/common/custom_button.dart';
-import '../../widgets/common/custom_text_input.dart';
 
 class CreateAccountScreen extends StatefulWidget {
   const CreateAccountScreen({Key? key}) : super(key: key);

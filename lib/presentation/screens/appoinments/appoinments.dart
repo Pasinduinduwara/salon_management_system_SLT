@@ -87,47 +87,50 @@ class _AppointmentsState extends State<Appointments> with TickerProviderStateMix
         ),
       ),
       backgroundColor:  Colors.white,
-      body: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  AppointmentCalendar(
-                    selectedDate: selectedDate,
-                    onDateSelected: _onDateSelected,
-                    hasAppointmentOnDate: _hasAppointmentOnDate,
-                    controller: _calendarController,
-                  ),
-                  const SizedBox(height: 26),
-                  AppointmentFilters(
-                    selectedFilter: selectedFilter,
-                    onFilterChanged: (filter) {
-                      setState(() => selectedFilter = filter);
-                    },
-                  ),
-                  const SizedBox(height: 12),
-                  ProfessionalDropdown(
-                    selectedProfessional: selectedProfessional,
-                    professionals: uniqueProfessionals,
-                    onChanged: (professional) {
-                      setState(() => selectedProfessional = professional);
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  AppointmentsList(
-                    appointments: appointments,
-                    selectedDate: selectedDate,
-                    selectedFilter: selectedFilter,
-                    selectedProfessional: selectedProfessional,
-                    controller: _listController,
-                  ),
-                  const SizedBox(height: 100),
-                ],
+      body: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    AppointmentCalendar(
+                      selectedDate: selectedDate,
+                      onDateSelected: _onDateSelected,
+                      hasAppointmentOnDate: _hasAppointmentOnDate,
+                      controller: _calendarController,
+                    ),
+                    const SizedBox(height: 26),
+                    AppointmentFilters(
+                      selectedFilter: selectedFilter,
+                      onFilterChanged: (filter) {
+                        setState(() => selectedFilter = filter);
+                      },
+                    ),
+                    const SizedBox(height: 12),
+                    ProfessionalDropdown(
+                      selectedProfessional: selectedProfessional,
+                      professionals: uniqueProfessionals,
+                      onChanged: (professional) {
+                        setState(() => selectedProfessional = professional);
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    AppointmentsList(
+                      appointments: appointments,
+                      selectedDate: selectedDate,
+                      selectedFilter: selectedFilter,
+                      selectedProfessional: selectedProfessional,
+                      controller: _listController,
+                    ),
+                    const SizedBox(height: 100),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
       bottomNavigationBar: const BottomNavBar(currentIndex: 1),
     );

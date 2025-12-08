@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:owner_salon_management/presentation/screens/booking/book_an_appoinment.dart';
 import '../../widgets/home/bottom_nav_bar.dart';
 import 'feedbacks.dart';
 
@@ -55,6 +56,8 @@ class MoreBody extends StatelessWidget {
             FeedbacksMenuItem(),
             SizedBox(height: 24),
             PromotionsMenuItem(),
+            SizedBox(height: 24),
+            BookAppoinment(),
           ],
         ),
       ),
@@ -92,6 +95,25 @@ class PromotionsMenuItem extends StatelessWidget {
       title: 'Promotions',
       onTap: () {
         // Navigate to Promotions page
+      },
+    );
+  }
+}
+class BookAppoinment extends StatelessWidget {
+  const BookAppoinment({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MenuItemWidget(
+      icon: Icons.my_library_books_outlined,
+      title: 'Book An Appoinment',
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const BookAnAppointment(),
+          ),
+        );
       },
     );
   }

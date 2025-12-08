@@ -86,7 +86,7 @@ class _DashboardState extends State<Dashboard> {
 
             // Stats Cards
             const Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: Column(
                 children: [
                   Row(
@@ -144,7 +144,7 @@ class _DashboardState extends State<Dashboard> {
 
             // Section Title
             const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              padding: EdgeInsets.symmetric(horizontal: 20.0),
               child: Text(
                 'Appointments',
                 style: TextStyle(
@@ -160,7 +160,7 @@ class _DashboardState extends State<Dashboard> {
 
             // All Appointments Section
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              padding: const EdgeInsets.symmetric(horizontal: 10.0),
               child: _AppointmentSection(
                 title: 'All Appointments',
                 count: 4,
