@@ -75,7 +75,7 @@ class _BookAnAppointmentState extends State<BookAnAppointment> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildTextField('Customer Name *', _nameController),
+            _buildTextField('Customer Name', _nameController),
             const SizedBox(height: 16),
             _buildTextField(
               'Enter customer Number',
@@ -197,16 +197,16 @@ class _BookAnAppointmentState extends State<BookAnAppointment> {
       keyboardType: keyboardType,
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: TextStyle(color: Color(0xFF0056A4)),
+        labelStyle: TextStyle(color: Colors.grey.shade300),
         // Label color
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: Colors.blue.shade100), // Border color
+          borderSide: BorderSide(color: Colors.grey.shade300), // Border color
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide(
-            color: Colors.blue.shade100,
+            color:Colors.grey.shade300,
           ), // Unfocused border
         ),
         focusedBorder: OutlineInputBorder(

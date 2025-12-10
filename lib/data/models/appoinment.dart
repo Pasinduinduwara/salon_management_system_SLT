@@ -86,5 +86,32 @@ class AppointmentData {
       'date': '2025-11-28',
       'avatar': 'LF',
     },
+    {
+      'name': 'Lucas Foster',
+      'time': '3 pm - 4 pm',
+      'service': 'Massage',
+      'status': 'Confirmed',
+      'professional': 'Mike Anderson',
+      'date': '2025-12-09',
+      'avatar': 'LF',
+    },
+    {
+      'name': 'Lucas Foster',
+      'time': '3 pm - 4 pm',
+      'service': 'Massage',
+      'status': 'Confirmed',
+      'professional': 'Mike Anderson',
+      'date': '2025-12-10',
+      'avatar': 'LF',
+    },
+    {
+      'name': 'Isabella Hayes',
+      'time': '2 pm - 3 pm',
+      'service': 'Facial',
+      'status': 'Cancel',
+      'professional': 'Sarah Johnson',
+      'date': '2025-12-11',
+      'avatar': 'IH',
+    },
   ];
 }

@@ -6,6 +6,7 @@ import 'package:owner_salon_management/presentation/screens/auth/widgets/passwor
 import 'package:owner_salon_management/presentation/screens/auth/widgets/login_button.dart';
 import 'package:owner_salon_management/presentation/screens/home/dashboard.dart';
 
+import '../../../data/services/auth_service.dart';
 import '../lang/select_language.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -58,29 +59,21 @@ class _LoginScreenState extends State<LoginScreen> {
     return null;
   }
 
-  void _handleLogin() {
-    setState(() {
-      _emailError = _validateEmail(_emailController.text);
-      _passwordError = _validatePassword(_passwordController.text);
-    });
-
-    if (_emailError == null && _passwordError == null) {
-      // All validations passed - proceed with login
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const Dashboard()),
-      );
-    } else {
-      // Show error message
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please fix the errors before continuing'),
-          backgroundColor: Colors.red,
-          duration: Duration(seconds: 2),
-        ),
-      );
+  void _handleLogin() async {
+    try {
+      final resp = await AuthService.login(_emailController.text, _passwordController.text);
+      // check approvalStatus
+      final salon = resp['salon'];
+      final approvalStatus = salon['approvalStatus'];
+      if (approvalStatus != null && approvalStatus != 'approved') {
+        // show message to user about pending approval
+      }
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => Dashboard()));
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
     }
   }
+
 
   void _handleRegister() {
     Navigator.push(

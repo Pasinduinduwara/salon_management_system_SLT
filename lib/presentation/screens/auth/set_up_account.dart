@@ -10,7 +10,17 @@ import 'package:owner_salon_management/presentation/screens/auth/widgets/setup_a
 import 'package:owner_salon_management/presentation/screens/auth/widgets/working_hours_picker.dart';
 
 class SetupAccountScreen extends StatefulWidget {
-  const SetupAccountScreen({super.key});
+  final String email;
+  final String password;
+  final String phone;
+
+  const SetupAccountScreen({
+    super.key,
+    required this.email,
+    required this.password,
+    required this.phone,
+  });
+
 
   @override
   State<SetupAccountScreen> createState() => _SetupAccountScreenState();
@@ -86,9 +96,19 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const UploadSalonImageScreen(),
+        builder: (context) => UploadSalonImageScreen(
+          ownerEmail: widget.email,
+          ownerPassword: widget.password,
+          phoneNumber: widget.phone,
+          salonName: salonNameController.text,
+          location: locationController.text,
+          salonType: selectedSalonType!,
+          startTime: startTime,
+          endTime: endTime,
+        ),
       ),
     );
+
   }
 
   @override

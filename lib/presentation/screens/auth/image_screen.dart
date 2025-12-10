@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:owner_salon_management/presentation/screens/auth/widgets/file_info_display.dart';
@@ -7,8 +8,32 @@ import 'package:owner_salon_management/presentation/screens/auth/widgets/upload_
 import 'package:owner_salon_management/presentation/screens/home/dashboard.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../data/services/auth_service.dart';
+import 'login_screen.dart';
+
 class UploadSalonImageScreen extends StatefulWidget {
-  const UploadSalonImageScreen({super.key});
+  final String ownerEmail;
+  final String ownerPassword;
+  final String phoneNumber;
+
+  final String salonName;
+  final String location;
+  final String salonType;
+
+  final TimeOfDay startTime;
+  final TimeOfDay endTime;
+
+  const UploadSalonImageScreen({
+    super.key,
+    required this.ownerEmail,
+    required this.ownerPassword,
+    required this.phoneNumber,
+    required this.salonName,
+    required this.location,
+    required this.salonType,
+    required this.startTime,
+    required this.endTime,
+  });
 
   @override
   State<UploadSalonImageScreen> createState() => _UploadSalonImageScreenState();
@@ -18,30 +43,45 @@ class _UploadSalonImageScreenState extends State<UploadSalonImageScreen> {
   File? selectedImage;
   final ImagePicker _picker = ImagePicker();
 
-  void _finishSetup() {
-    // Validate image selection
+  // … inside _finishSetup()
+  Future<void> _finishSetup() async {
     if (selectedImage == null) {
       _showErrorSnackBar('Please select an image');
       return;
     }
 
-    // Validate image file
-    if (!_isValidImageFile(selectedImage!)) {
-      _showErrorSnackBar('Please select a valid image file (JPG, PNG, or GIF)');
-      return;
-    }
+    final fields = <String, String>{
+      'name': widget.salonName,
+      'email': widget.ownerEmail,
+      'password': widget.ownerPassword,
+      'phone': widget.phoneNumber,
+      'location': widget.location,
+      'salonType': widget.salonType,
+      'workingHours': jsonEncode({
+        'start': widget.startTime.format(context),
+        'end': widget.endTime.format(context),
+      }),
+      'services': jsonEncode(['Cut', 'Color']),
+      'coordinates': jsonEncode({'lat': 6.9271, 'lng': 79.8612}),
+    };
 
-    // All validations passed
-    debugPrint('Image uploaded: ${selectedImage!.path}');
-    _showSuccessSnackBar('Setup completed successfully!');
-
-    // Navigate to dashboard after successful setup
-    Future.delayed(const Duration(seconds: 1), () {
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => const Dashboard()),
+    try {
+      final result = await AuthService.registerWithImage(
+        fields: fields,
+        imageFile: selectedImage,
+      );
+      // result contains token, salon etc.
+      _showSuccessSnackBar('Setup completed successfully!');
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => const LoginScreen()),
             (route) => false,
       );
-    });
+
+      // navigate to Dashboard (as your code already does)
+    } catch (e) {
+      _showErrorSnackBar(e.toString());
+    }
   }
 
   bool _isValidImageFile(File file) {
@@ -125,20 +165,14 @@ class _UploadSalonImageScreenState extends State<UploadSalonImageScreen> {
                   style: OutlinedButton.styleFrom(
                     backgroundColor: const Color(0xFFF5F5F5),
                     foregroundColor: Colors.black87,
-                    side: BorderSide(
-                      color: Colors.grey.shade300,
-                      width: 1.5,
-                    ),
+                    side: BorderSide(color: Colors.grey.shade300, width: 1.5),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
                   child: const Text(
                     'Cancel',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                   ),
                 ),
               ),
@@ -174,9 +208,7 @@ class _UploadSalonImageScreenState extends State<UploadSalonImageScreen> {
         content: Text(message),
         backgroundColor: Colors.green,
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         margin: const EdgeInsets.all(16),
       ),
     );
@@ -188,9 +220,7 @@ class _UploadSalonImageScreenState extends State<UploadSalonImageScreen> {
         content: Text(message),
         backgroundColor: Colors.red,
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         margin: const EdgeInsets.all(16),
       ),
     );
@@ -199,7 +229,7 @@ class _UploadSalonImageScreenState extends State<UploadSalonImageScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:Colors.white,
+      backgroundColor: Colors.white,
       appBar: const UploadImageAppBar(),
       body: SafeArea(
         child: Column(
@@ -322,11 +352,7 @@ class _ImageSourceOption extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              icon,
-              color: const Color(0xFF1565C0),
-              size: 32,
-            ),
+            Icon(icon, color: const Color(0xFF1565C0), size: 32),
             const SizedBox(height: 8),
             Text(
               label,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:owner_salon_management/presentation/screens/auth/login_screen.dart';
+import '../../../data/services/auth_service.dart';
+import '../auth/login_screen.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -9,8 +10,53 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  Map<String, dynamic>? salonData;
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfile();
+  }
+
+  Future<void> _loadProfile() async {
+    try {
+      final resp = await AuthService.getOwnerProfile();
+      setState(() {
+        salonData = resp['salon'];
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() => isLoading = false);
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Failed to load profile: $e")),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return const Scaffold(
+        backgroundColor: Colors.white,
+        body: Center(
+          child: CircularProgressIndicator(
+            color: Color(0xFF0066CC),
+          ),
+        ),
+      );
+    }
+
+    if (salonData == null) {
+      return const Scaffold(
+        backgroundColor: Colors.white,
+        body: Center(child: Text('No profile data found')),
+      );
+    }
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -52,7 +98,22 @@ class _ProfileState extends State<Profile> {
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(60),
-                  child: Container(
+                  child: salonData!['image'] != null && salonData!['image'].toString().isNotEmpty
+                      ? Image.network(
+                    salonData!['image'],
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        color: Colors.grey[300],
+                        child: Icon(
+                          Icons.person,
+                          size: 60,
+                          color: Colors.grey[600],
+                        ),
+                      );
+                    },
+                  )
+                      : Container(
                     color: Colors.grey[300],
                     child: Icon(
                       Icons.person,
@@ -65,9 +126,9 @@ class _ProfileState extends State<Profile> {
               const SizedBox(height: 20),
 
               // Salon Name
-              const Text(
-                'Glamour Haven',
-                style: TextStyle(
+              Text(
+                salonData!['name'] ?? 'Salon',
+                style: const TextStyle(
                   fontSize: 26,
                   fontWeight: FontWeight.bold,
                   color: Colors.black,
@@ -138,84 +199,83 @@ class _ProfileState extends State<Profile> {
                       icon: Icons.person_outline,
                       iconColor: const Color(0xFF0066CC),
                       label: 'Owner Name',
-                      value: 'Sophia Bennett',
+                      value: salonData!['name'] ?? 'Not available',
                       showDivider: true,
                     ),
                     _buildDetailCard(
                       icon: Icons.email_outlined,
                       iconColor: const Color(0xFF0066CC),
                       label: 'Email',
-                      value: 'glamourhaven@email.com',
+                      value: salonData!['email'] ?? 'Not available',
                       showDivider: true,
                     ),
                     _buildDetailCard(
                       icon: Icons.phone_outlined,
                       iconColor: const Color(0xFF0066CC),
                       label: 'Mobile',
-                      value: '+1 (555) 123-4567',
+                      value: salonData!['phone'] ?? 'Not available',
                       showDivider: true,
                     ),
                     _buildDetailCard(
                       icon: Icons.access_time_outlined,
                       iconColor: const Color(0xFF0066CC),
                       label: 'Working hours',
-                      value: '9.00 am - 7.00 pm',
+                      value: salonData!['workingHours'] ?? 'Not set',
                       showDivider: true,
                     ),
                     _buildDetailCard(
                       icon: Icons.location_on_outlined,
                       iconColor: const Color(0xFF0066CC),
                       label: 'Address',
-                      value: '123 Main St, Anytown, USA',
-                      showDivider: true,
+                      value: salonData!['location'] ?? 'Not available',
+                      showDivider: salonData!['description'] != null && salonData!['description'].toString().isNotEmpty,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                  color: const Color(
-                                    0xFF0066CC,
-                                  ).withOpacity(0.1),
-                                  borderRadius: BorderRadius.circular(10),
+                    if (salonData!['description'] != null && salonData!['description'].toString().isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFF0066CC).withOpacity(0.1),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: const Icon(
+                                    Icons.description_outlined,
+                                    color: Color(0xFF0066CC),
+                                    size: 22,
+                                  ),
                                 ),
-                                child: const Icon(
-                                  Icons.description_outlined,
-                                  color: Color(0xFF0066CC),
-                                  size: 22,
+                                const SizedBox(width: 16),
+                                const Text(
+                                  'Description',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(width: 16),
-                              const Text(
-                                'Description',
+                              ],
+                            ),
+                            const SizedBox(height: 12),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 54),
+                              child: Text(
+                                salonData!['description'],
                                 style: TextStyle(
                                   fontSize: 14,
-                                  color: Colors.grey,
-                                  fontWeight: FontWeight.w500,
+                                  color: Colors.grey[800],
+                                  height: 1.5,
                                 ),
                               ),
-                            ],
-                          ),
-                          const SizedBox(height: 12),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 54),
-                            child: Text(
-                              'Glamour Haven is a premier beauty salon offering exceptional hair styling, makeup artistry, and spa treatments. With experienced professionals and a luxurious atmosphere, we provide personalized services to help you look and feel your best.',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.grey[800],
-                                height: 1.5,
-                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
                   ],
                 ),
               ),
@@ -227,7 +287,7 @@ class _ProfileState extends State<Profile> {
                 height: 54,
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.push(
+                    Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
                         builder: (context) => const LoginScreen(),

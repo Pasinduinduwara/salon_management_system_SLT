@@ -120,8 +120,15 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
       // All validations passed - proceed to next screen
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const SetupAccountScreen()),
+        MaterialPageRoute(
+          builder: (context) => SetupAccountScreen(
+            email: _emailController.text,
+            password: _passwordController.text,
+            phone: _phoneController.text,
+          ),
+        ),
       );
+
     } else {
       // Show error message
       ScaffoldMessenger.of(context).showSnackBar(
