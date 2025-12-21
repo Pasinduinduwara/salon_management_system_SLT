@@ -120,9 +120,8 @@ class _ManageScreenState extends State<ManageScreen> {
           'Manage',
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: 24,
-            color: Color(0xFF1A1A1A),
-            letterSpacing: -0.5,
+            fontSize: 22,
+            color: Colors.black,
           ),
         ),
       ),

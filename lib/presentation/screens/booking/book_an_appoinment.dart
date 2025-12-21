@@ -119,7 +119,7 @@ class _BookAnAppointmentState extends State<BookAnAppointment> {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Color(0xFFE8EDF2),
+                  color: const Color(0xFFE8EDF2),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Row(
@@ -225,7 +225,7 @@ class _BookAnAppointmentState extends State<BookAnAppointment> {
           vertical: 12,
         ),
       ),
-      style: TextStyle(color: Colors.black),
+      style: const TextStyle(color: Colors.black),
       // Text color
       cursorColor: Colors.blue, // Cursor color
     );
@@ -309,7 +309,7 @@ class _BookAnAppointmentState extends State<BookAnAppointment> {
             ),
             child: Text(
               service.isSelected ? 'Remove' : 'Add',
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
             ),
           ),
         ],

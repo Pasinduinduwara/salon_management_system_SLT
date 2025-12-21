@@ -107,7 +107,6 @@ class _FeedbacksPageState extends State<FeedbacksPage> {
             color: Colors.black,
           ),
         ),
-        centerTitle: true,
       ),
       body: SafeArea(
         child: SingleChildScrollView(
