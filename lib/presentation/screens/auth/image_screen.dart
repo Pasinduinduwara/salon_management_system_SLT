@@ -5,7 +5,6 @@ import 'package:owner_salon_management/presentation/screens/auth/widgets/file_in
 import 'package:owner_salon_management/presentation/screens/auth/widgets/finish_setup_button.dart';
 import 'package:owner_salon_management/presentation/screens/auth/widgets/image_picker_box.dart';
 import 'package:owner_salon_management/presentation/screens/auth/widgets/upload_image_app_bar.dart';
-import 'package:owner_salon_management/presentation/screens/home/dashboard.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../data/services/auth_service.dart';
@@ -66,7 +65,7 @@ class _UploadSalonImageScreenState extends State<UploadSalonImageScreen> {
     };
 
     try {
-      final result = await AuthService.registerWithImage(
+      await AuthService.registerWithImage(
         fields: fields,
         imageFile: selectedImage,
       );
@@ -75,18 +74,13 @@ class _UploadSalonImageScreenState extends State<UploadSalonImageScreen> {
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (_) => const LoginScreen()),
-            (route) => false,
+        (route) => false,
       );
 
       // navigate to Dashboard (as your code already does)
     } catch (e) {
       _showErrorSnackBar(e.toString());
     }
-  }
-
-  bool _isValidImageFile(File file) {
-    final extension = file.path.split('.').last.toLowerCase();
-    return ['jpg', 'jpeg', 'png', 'gif'].contains(extension);
   }
 
   Future<void> _showImageSourceDialog() async {
@@ -202,11 +196,12 @@ class _UploadSalonImageScreenState extends State<UploadSalonImageScreen> {
     }
   }
 
-  void _showSuccessSnackBar(String message) {
+  void _showErrorSnackBar(String message) {
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: Colors.green,
+        backgroundColor: Colors.red,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         margin: const EdgeInsets.all(16),
@@ -214,11 +209,12 @@ class _UploadSalonImageScreenState extends State<UploadSalonImageScreen> {
     );
   }
 
-  void _showErrorSnackBar(String message) {
+  void _showSuccessSnackBar(String message) {
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: Colors.red,
+        backgroundColor: Colors.green,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         margin: const EdgeInsets.all(16),
@@ -279,15 +275,15 @@ class _UploadSalonImageScreenState extends State<UploadSalonImageScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
+                          const Row(
                             children: [
                               Icon(
                                 Icons.info_outline,
-                                color: const Color(0xFF1565C0),
+                                color: Color(0xFF1565C0),
                                 size: 20,
                               ),
-                              const SizedBox(width: 8),
-                              const Text(
+                              SizedBox(width: 8),
+                              Text(
                                 'Image Guidelines',
                                 style: TextStyle(
                                   fontSize: 14,

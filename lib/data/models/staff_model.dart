@@ -22,7 +22,8 @@ class StaffModel {
   });
 
   // Helper method to check if photoPath is a URL
-  bool get isPhotoUrl => photoPath != null &&
+  bool get isPhotoUrl =>
+      photoPath != null &&
       (photoPath!.startsWith('http://') || photoPath!.startsWith('https://'));
 
   // Helper method to check if has any photo

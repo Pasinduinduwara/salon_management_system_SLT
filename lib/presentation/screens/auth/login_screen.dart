@@ -5,9 +5,7 @@ import 'package:owner_salon_management/presentation/screens/auth/widgets/email_f
 import 'package:owner_salon_management/presentation/screens/auth/widgets/password_form_field.dart';
 import 'package:owner_salon_management/presentation/screens/auth/widgets/login_button.dart';
 import 'package:owner_salon_management/presentation/screens/home/dashboard.dart';
-
 import '../../../data/services/auth_service.dart';
-import '../lang/select_language.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -17,7 +15,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
@@ -90,21 +87,6 @@ class _LoginScreenState extends State<LoginScreen> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => LanguageSelectionScreen(),
-              ),
-            );
-          },
-          icon: const Icon(
-            Icons.arrow_back,
-            color: Colors.black,
-            size: 28,
-          ),
-        ),
       ),
       body: SafeArea(
         child: SingleChildScrollView(

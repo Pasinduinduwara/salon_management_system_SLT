@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:owner_salon_management/presentation/screens/appoinments/appoinments.dart';
 import 'package:owner_salon_management/presentation/screens/feedbacks/more.dart';
-
 import '../../screens/home/dashboard.dart';
 import '../../screens/manage/manage_screen.dart';
 

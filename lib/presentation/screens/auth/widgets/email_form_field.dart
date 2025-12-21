@@ -12,9 +12,6 @@ class EmailFormField extends StatelessWidget {
     this.onChanged,
   });
 
-  bool _isValidEmail(String email) {
-    return RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email);
-  }
 
   @override
   Widget build(BuildContext context) {
