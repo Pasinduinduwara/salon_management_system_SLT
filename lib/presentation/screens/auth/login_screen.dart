@@ -58,26 +58,33 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _handleLogin() async {
     try {
-      final resp = await AuthService.login(_emailController.text, _passwordController.text);
+      final resp = await AuthService.login(
+        _emailController.text,
+        _passwordController.text,
+      );
       // check approvalStatus
       final salon = resp['salon'];
       final approvalStatus = salon['approvalStatus'];
+      if (!mounted) return;
       if (approvalStatus != null && approvalStatus != 'approved') {
         // show message to user about pending approval
       }
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => Dashboard()));
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const Dashboard()),
+      );
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.toString())));
     }
   }
-
 
   void _handleRegister() {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => const CreateAccountScreen(),
-      ),
+      MaterialPageRoute(builder: (context) => const CreateAccountScreen()),
     );
   }
 
@@ -85,9 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-      ),
+      appBar: AppBar(backgroundColor: Colors.white),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Center(
@@ -96,28 +101,13 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // IconButton(
-                  //   icon: const Icon(Icons.arrow_back),
-                  //   onPressed: () => Navigator.pop(context),
-                  //   padding: EdgeInsets.zero,
-                  //   alignment: Alignment.centerLeft,
-                  // ),
-                  // const SizedBox(height: 20),
                   Image.asset(
                     'assets/images/logo.png',
                     width: 120,
                     height: 120,
                     fit: BoxFit.contain,
                   ),
-                  SizedBox(height: 10),
-                  // Text(
-                  //   "Welcome to eSalon",
-                  //   style: TextStyle(
-                  //     fontWeight: FontWeight.bold,
-                  //     fontSize: 33.sp,
-                  //     color: AppColors.textPrimary,
-                  //   ),
-                  // ),
+                  const SizedBox(height: 10),
                   const Center(
                     child: Text(
                       'Login to your salon',
@@ -166,9 +156,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   const ForgotPasswordLink(),
                   const SizedBox(height: 20),
-                  LoginButton(
-                    onPressed: _handleLogin,
-                  ),
+                  LoginButton(onPressed: _handleLogin),
                   const SizedBox(height: 16),
                   Center(
                     child: Row(
@@ -176,10 +164,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       children: [
                         const Text(
                           'Not registered yet? ',
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 13,
-                          ),
+                          style: TextStyle(color: Colors.grey, fontSize: 13),
                         ),
                         GestureDetector(
                           onTap: _handleRegister,
