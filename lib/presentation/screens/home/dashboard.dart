@@ -3,9 +3,10 @@ import '../../widgets/home/bottom_nav_bar.dart';
 import '../manage/add_staff_screen.dart';
 import '../manage/add_service_screen.dart';
 import '../feedbacks/feedbacks.dart';
-import '../profile/profile.dart';
+import '../notifications/notification_page.dart';
 import '../../widgets/home/dashboard_appointment_card.dart';
 import '../../widgets/home/dashboard_action_button.dart';
+import '../promotions/promotions_page.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -77,30 +78,19 @@ class _DashboardState extends State<Dashboard> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const Profile(),
+                          builder: (context) => const NotificationPage(),
                         ),
                       );
                     },
-                    child: Stack(
+                    child: const Stack(
                       children: [
-                        Container(
-                          width: 40,
-                          height: 40,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: const Color(0xFFE0E0E0),
-                              width: 2,
-                            ),
-                          ),
-                          child: const CircleAvatar(
-                            radius: 23,
-                            backgroundColor: Color(0xFFF5F5F5),
-                            child: Icon(
-                              Icons.person,
-                              color: Color(0xFF666666),
-                              size: 28,
-                            ),
+                        CircleAvatar(
+                          radius: 23,
+                          backgroundColor: Color(0xFFF5F5F5),
+                          child: Icon(
+                            Icons.notifications,
+                            color: Color(0xFF666666),
+                            size: 28,
                           ),
                         ),
                       ],
@@ -392,9 +382,10 @@ class _DashboardState extends State<Dashboard> {
                       icon: Icons.local_offer_outlined,
                       label: 'Promotions',
                       onTap: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Promotions coming soon!'),
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const PromotionsPage(),
                           ),
                         );
                       },
