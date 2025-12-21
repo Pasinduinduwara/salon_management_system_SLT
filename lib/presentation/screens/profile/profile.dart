@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
 import '../../../data/services/auth_service.dart';
 import '../auth/login_screen.dart';
 
@@ -10,6 +11,28 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  String _formatWorkingHours(dynamic workingHours) {
+    if (workingHours == null || workingHours.toString().isEmpty) {
+      return 'Not set';
+    }
+    try {
+      Map<String, dynamic> hoursMap;
+      if (workingHours is Map<String, dynamic>) {
+        hoursMap = workingHours;
+      } else if (workingHours is String) {
+        hoursMap = Map<String, dynamic>.from(jsonDecode(workingHours));
+      } else {
+        return workingHours.toString();
+      }
+      final start = hoursMap['start'] ?? '';
+      final end = hoursMap['end'] ?? '';
+      if (start.isEmpty || end.isEmpty) return workingHours.toString();
+      return '$start - $end';
+    } catch (e) {
+      return workingHours.toString();
+    }
+  }
+
   Map<String, dynamic>? salonData;
   bool isLoading = true;
 
@@ -30,9 +53,9 @@ class _ProfileState extends State<Profile> {
       setState(() => isLoading = false);
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Failed to load profile: $e")),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("Failed to load profile: $e")));
       }
     }
   }
@@ -43,9 +66,7 @@ class _ProfileState extends State<Profile> {
       return const Scaffold(
         backgroundColor: Colors.white,
         body: Center(
-          child: CircularProgressIndicator(
-            color: Color(0xFF0066CC),
-          ),
+          child: CircularProgressIndicator(color: Color(0xFF0066CC)),
         ),
       );
     }
@@ -98,29 +119,31 @@ class _ProfileState extends State<Profile> {
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(60),
-                  child: salonData!['image'] != null && salonData!['image'].toString().isNotEmpty
+                  child:
+                      salonData!['image'] != null &&
+                          salonData!['image'].toString().isNotEmpty
                       ? Image.network(
-                    salonData!['image'],
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        color: Colors.grey[300],
-                        child: Icon(
-                          Icons.person,
-                          size: 60,
-                          color: Colors.grey[600],
-                        ),
-                      );
-                    },
-                  )
+                          salonData!['image'],
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              color: Colors.grey[300],
+                              child: Icon(
+                                Icons.person,
+                                size: 60,
+                                color: Colors.grey[600],
+                              ),
+                            );
+                          },
+                        )
                       : Container(
-                    color: Colors.grey[300],
-                    child: Icon(
-                      Icons.person,
-                      size: 60,
-                      color: Colors.grey[600],
-                    ),
-                  ),
+                          color: Colors.grey[300],
+                          child: Icon(
+                            Icons.person,
+                            size: 60,
+                            color: Colors.grey[600],
+                          ),
+                        ),
                 ),
               ),
               const SizedBox(height: 20),
@@ -220,7 +243,7 @@ class _ProfileState extends State<Profile> {
                       icon: Icons.access_time_outlined,
                       iconColor: const Color(0xFF0066CC),
                       label: 'Working hours',
-                      value: salonData!['workingHours'] ?? 'Not set',
+                      value: _formatWorkingHours(salonData!['workingHours']),
                       showDivider: true,
                     ),
                     _buildDetailCard(
@@ -228,9 +251,12 @@ class _ProfileState extends State<Profile> {
                       iconColor: const Color(0xFF0066CC),
                       label: 'Address',
                       value: salonData!['location'] ?? 'Not available',
-                      showDivider: salonData!['description'] != null && salonData!['description'].toString().isNotEmpty,
+                      showDivider:
+                          salonData!['description'] != null &&
+                          salonData!['description'].toString().isNotEmpty,
                     ),
-                    if (salonData!['description'] != null && salonData!['description'].toString().isNotEmpty)
+                    if (salonData!['description'] != null &&
+                        salonData!['description'].toString().isNotEmpty)
                       Padding(
                         padding: const EdgeInsets.all(20.0),
                         child: Column(
@@ -241,7 +267,9 @@ class _ProfileState extends State<Profile> {
                                 Container(
                                   padding: const EdgeInsets.all(10),
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFF0066CC).withOpacity(0.1),
+                                    color: const Color(
+                                      0xFF0066CC,
+                                    ).withOpacity(0.1),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: const Icon(
