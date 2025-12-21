@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import '../../../data/services/auth_service.dart';
+import '../../widgets/home/bottom_nav_bar.dart';
+import '../promotions/promotions_page.dart';
+import '../feedbacks/feedbacks.dart';
 import '../auth/login_screen.dart';
 
 class Profile extends StatefulWidget {
@@ -11,6 +14,49 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  Widget _buildSettingsButton({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6.0),
+      child: Material(
+        color: const Color(0xFFF6F6F6),
+        borderRadius: BorderRadius.circular(30),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(30),
+          onTap: onTap,
+          child: Container(
+            height: 60,
+            padding: const EdgeInsets.symmetric(horizontal: 18),
+            child: Row(
+              children: [
+                Icon(icon, size: 26, color: Colors.grey[700]),
+                const SizedBox(width: 18),
+                Expanded(
+                  child: Text(
+                    label,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+                const Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: 22,
+                  color: Colors.grey,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   String _formatWorkingHours(dynamic workingHours) {
     if (workingHours == null || workingHours.toString().isEmpty) {
       return 'Not set';
@@ -83,221 +129,166 @@ class _ProfileState extends State<Profile> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black, size: 24),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
         title: const Text(
           'Profile',
           style: TextStyle(
             color: Colors.black,
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
           ),
         ),
-        centerTitle: true,
       ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(24.0),
           child: Column(
             children: [
-              // Profile Avatar with blue border
+              // Profile Card
               Container(
-                width: 120,
-                height: 120,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(color: const Color(0xFF0066CC), width: 4),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFF0066CC).withOpacity(0.15),
-                      blurRadius: 20,
-                      offset: const Offset(0, 8),
-                    ),
-                  ],
+                width: double.infinity,
+                margin: const EdgeInsets.only(bottom: 20),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 24,
+                  horizontal: 16,
                 ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(60),
-                  child:
-                      salonData!['image'] != null &&
-                          salonData!['image'].toString().isNotEmpty
-                      ? Image.network(
-                          salonData!['image'],
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Container(
-                              color: Colors.grey[300],
-                              child: Icon(
-                                Icons.person,
-                                size: 60,
-                                color: Colors.grey[600],
-                              ),
-                            );
-                          },
-                        )
-                      : Container(
-                          color: Colors.grey[300],
-                          child: Icon(
-                            Icons.person,
-                            size: 60,
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                ),
-              ),
-              const SizedBox(height: 20),
-
-              // Salon Name
-              Text(
-                salonData!['name'] ?? 'Salon',
-                style: const TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                  letterSpacing: 0.3,
-                ),
-              ),
-              const SizedBox(height: 12),
-
-              // Edit Button
-              TextButton(
-                onPressed: () {
-                  // Add edit functionality
-                },
-                style: TextButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 8,
-                  ),
-                ),
-                child: const Text(
-                  'Edit',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Color(0xFF0066CC),
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-
-              // Salon Details Section
-              Container(
-                alignment: Alignment.centerLeft,
-                child: Row(
-                  children: [
-                    Container(
-                      width: 4,
-                      height: 24,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF0066CC),
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    const Text(
-                      'Salon Details',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 20),
-
-              // Salon Details Card
-              Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: Colors.grey[200]!),
+                  borderRadius: BorderRadius.circular(18),
+                  border: Border.all(color: Colors.blue.shade100, width: 1),
                 ),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    _buildDetailCard(
-                      icon: Icons.person_outline,
-                      iconColor: const Color(0xFF0066CC),
-                      label: 'Owner Name',
-                      value: salonData!['name'] ?? 'Not available',
-                      showDivider: true,
+                    // Top Row
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        // Salon image
+                        if (salonData!['image'] != null &&
+                            salonData!['image'].toString().isNotEmpty)
+                          Container(
+                            width: 90,
+                            height: 90,
+                            margin: const EdgeInsets.only(right: 18),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: Colors.blue.shade100,
+                                width: 2,
+                              ),
+                            ),
+                            child: ClipOval(
+                              child: Image.network(
+                                salonData!['image'],
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Container(
+                                    color: Colors.grey[300],
+                                    child: Icon(
+                                      Icons.store,
+                                      size: 48,
+                                      color: Colors.grey[600],
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                        // Name and working hours centered
+                        Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                salonData!['name'] ?? 'Salon',
+                                style: const TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
+                                textAlign: TextAlign.start,
+                              ),
+                              const SizedBox(height: 6),
+                              if (salonData!['email'] != null &&
+                                  salonData!['email'].toString().isNotEmpty)
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    const Icon(
+                                      Icons.email_outlined,
+                                      size: 16,
+                                      color: Color(0xFF0066CC),
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Flexible(
+                                      child: Text(
+                                        salonData!['email'],
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.grey[800],
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                        textAlign: TextAlign.start,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              const SizedBox(height: 8),
+                              if (salonData!['workingHours'] != null &&
+                                  salonData!['workingHours']
+                                      .toString()
+                                      .isNotEmpty)
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    const Icon(
+                                      Icons.access_time_outlined,
+                                      size: 18,
+                                      color: Color(0xFF0066CC),
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Flexible(
+                                      child: Text(
+                                        _formatWorkingHours(
+                                          salonData!['workingHours'],
+                                        ),
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                          color: Colors.grey[800],
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                        textAlign: TextAlign.start,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                    _buildDetailCard(
-                      icon: Icons.email_outlined,
-                      iconColor: const Color(0xFF0066CC),
-                      label: 'Email',
-                      value: salonData!['email'] ?? 'Not available',
-                      showDivider: true,
-                    ),
-                    _buildDetailCard(
-                      icon: Icons.phone_outlined,
-                      iconColor: const Color(0xFF0066CC),
-                      label: 'Mobile',
-                      value: salonData!['phone'] ?? 'Not available',
-                      showDivider: true,
-                    ),
-                    _buildDetailCard(
-                      icon: Icons.access_time_outlined,
-                      iconColor: const Color(0xFF0066CC),
-                      label: 'Working hours',
-                      value: _formatWorkingHours(salonData!['workingHours']),
-                      showDivider: true,
-                    ),
-                    _buildDetailCard(
-                      icon: Icons.location_on_outlined,
-                      iconColor: const Color(0xFF0066CC),
-                      label: 'Address',
-                      value: salonData!['location'] ?? 'Not available',
-                      showDivider:
-                          salonData!['description'] != null &&
-                          salonData!['description'].toString().isNotEmpty,
-                    ),
-                    if (salonData!['description'] != null &&
-                        salonData!['description'].toString().isNotEmpty)
+                    const SizedBox(height: 8),
+                    // Address below image
+                    if (salonData!['location'] != null &&
+                        salonData!['location'].toString().isNotEmpty)
                       Padding(
-                        padding: const EdgeInsets.all(20.0),
-                        child: Column(
+                        padding: const EdgeInsets.only(top: 16),
+                        child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.all(10),
-                                  decoration: BoxDecoration(
-                                    color: const Color(
-                                      0xFF0066CC,
-                                    ).withOpacity(0.1),
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: const Icon(
-                                    Icons.description_outlined,
-                                    color: Color(0xFF0066CC),
-                                    size: 22,
-                                  ),
-                                ),
-                                const SizedBox(width: 16),
-                                const Text(
-                                  'Description',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.grey,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ],
+                            const Icon(
+                              Icons.location_on_outlined,
+                              size: 18,
+                              color: Color(0xFF0066CC),
                             ),
-                            const SizedBox(height: 12),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 54),
+                            const SizedBox(width: 6),
+                            Expanded(
                               child: Text(
-                                salonData!['description'],
+                                salonData!['location'],
                                 style: TextStyle(
-                                  fontSize: 14,
+                                  fontSize: 15,
                                   color: Colors.grey[800],
-                                  height: 1.5,
                                 ),
                               ),
                             ),
@@ -307,7 +298,92 @@ class _ProfileState extends State<Profile> {
                   ],
                 ),
               ),
-              const SizedBox(height: 40),
+
+              // Edit Profile Button
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  icon: const Icon(Icons.person_outline, color: Colors.white),
+                  label: const Text(
+                    'Edit Profile',
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue.shade900,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  onPressed: () {
+                    // Add edit functionality
+                  },
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Settings Section Header
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: EdgeInsets.only(left: 4, bottom: 8),
+                  child: Text(
+                    'Settings',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              ),
+
+              // Settings Buttons Section
+              Column(
+                children: [
+                  _buildSettingsButton(
+                    icon: Icons.campaign_outlined,
+                    label: 'Promotions',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const PromotionsPage(),
+                        ),
+                      );
+                    },
+                  ),
+                  _buildSettingsButton(
+                    icon: Icons.chat_bubble_outline,
+                    label: 'Feedbacks',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const FeedbacksPage(),
+                        ),
+                      );
+                    },
+                  ),
+                  _buildSettingsButton(
+                    icon: Icons.security_outlined,
+                    label: 'Security',
+                    onTap: () {},
+                  ),
+                  _buildSettingsButton(
+                    icon: Icons.privacy_tip_outlined,
+                    label: 'Privacy',
+                    onTap: () {},
+                  ),
+                  _buildSettingsButton(
+                    icon: Icons.help_outline,
+                    label: 'Help & Support',
+                    onTap: () {},
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
 
               // Logout Button
               SizedBox(
@@ -360,64 +436,7 @@ class _ProfileState extends State<Profile> {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildDetailCard({
-    required IconData icon,
-    required Color iconColor,
-    required String label,
-    required String value,
-    required bool showDivider,
-  }) {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: iconColor.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Icon(icon, color: iconColor, size: 22),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      label,
-                      style: const TextStyle(
-                        fontSize: 13,
-                        color: Colors.grey,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      value,
-                      style: const TextStyle(
-                        fontSize: 15,
-                        color: Colors.black,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-        if (showDivider)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Divider(height: 1, color: Colors.grey[200]),
-          ),
-      ],
+      bottomNavigationBar: const BottomNavBar(currentIndex: 3),
     );
   }
 
