@@ -70,15 +70,15 @@ class _UploadSalonImageScreenState extends State<UploadSalonImageScreen> {
         imageFile: selectedImage,
       );
       // result contains token, salon etc.
+      if (!mounted) return;
       _showSuccessSnackBar('Setup completed successfully!');
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (_) => const LoginScreen()),
         (route) => false,
       );
-
-      // navigate to Dashboard (as your code already does)
     } catch (e) {
+      if (!mounted) return;
       _showErrorSnackBar(e.toString());
     }
   }
