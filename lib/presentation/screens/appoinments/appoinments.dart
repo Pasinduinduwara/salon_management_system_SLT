@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+
 import '../../../core/theme/app_colors.dart';
-import '../../../data/models/appoinment.dart';
-import '../../widgets/appoinments/appoinment_calendar.dart';
-import '../../widgets/appoinments/appoinment_filters.dart';
-import '../../widgets/appoinments/appoinments_list.dart';
 import '../../widgets/home/bottom_nav_bar.dart';
+import '../../widgets/appoinments/appointments_calendar.dart';
+import '../../widgets/appoinments/appointments_list.dart';
+import '../../utils/appointment_utils.dart';
 
 class Appointments extends StatefulWidget {
   const Appointments({super.key});
@@ -13,32 +13,12 @@ class Appointments extends StatefulWidget {
   State<Appointments> createState() => _AppointmentsState();
 }
 
-class _AppointmentsState extends State<Appointments> with TickerProviderStateMixin {
+class _AppointmentsState extends State<Appointments>
+    with TickerProviderStateMixin {
   DateTime selectedDate = DateTime.now();
-  String selectedFilter = 'All';
-  String selectedProfessional = 'All Professionals';
-  late AnimationController _calendarController;
-  late AnimationController _listController;
+  AnimationController? _calendarController;
 
-  final List<Map<String, dynamic>> appointments = AppointmentData.sampleAppointments;
-
-  List<String> get uniqueProfessionals {
-    final professionals = appointments
-        .map((apt) => apt['professional'] as String)
-        .toSet()
-        .toList();
-    professionals.sort();
-    return ['All Professionals', ...professionals];
-  }
-
-  bool _hasAppointmentOnDate(DateTime date) {
-    return appointments.any((apt) {
-      final aptDate = DateTime.parse(apt['date']);
-      return aptDate.year == date.year &&
-          aptDate.month == date.month &&
-          aptDate.day == date.day;
-    });
-  }
+  final List<Map<String, dynamic>> appointments = sampleAppointments;
 
   @override
   void initState() {
@@ -47,26 +27,24 @@ class _AppointmentsState extends State<Appointments> with TickerProviderStateMix
       vsync: this,
       duration: const Duration(milliseconds: 300),
     );
-    _listController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 400),
-    );
-    _calendarController.forward();
-    _listController.forward();
+    _calendarController?.forward();
   }
 
   @override
   void dispose() {
-    _calendarController.dispose();
-    _listController.dispose();
+    _calendarController?.dispose();
     super.dispose();
   }
 
   void _onDateSelected(DateTime date) {
     setState(() {
       selectedDate = date;
-      _listController.reset();
-      _listController.forward();
+    });
+  }
+
+  void _navigateMonth(int direction) {
+    setState(() {
+      selectedDate = navigateMonth(selectedDate, direction);
     });
   }
 
@@ -86,49 +64,23 @@ class _AppointmentsState extends State<Appointments> with TickerProviderStateMix
           ),
         ),
       ),
-      backgroundColor:  Colors.white,
-      body: Padding(
-        padding: const EdgeInsets.all(10.0),
+      backgroundColor: Colors.white,
+      body: SingleChildScrollView(
         child: Column(
           children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    AppointmentCalendar(
-                      selectedDate: selectedDate,
-                      onDateSelected: _onDateSelected,
-                      hasAppointmentOnDate: _hasAppointmentOnDate,
-                      controller: _calendarController,
-                    ),
-                    const SizedBox(height: 26),
-                    AppointmentFilters(
-                      selectedFilter: selectedFilter,
-                      onFilterChanged: (filter) {
-                        setState(() => selectedFilter = filter);
-                      },
-                    ),
-                    const SizedBox(height: 12),
-                    ProfessionalDropdown(
-                      selectedProfessional: selectedProfessional,
-                      professionals: uniqueProfessionals,
-                      onChanged: (professional) {
-                        setState(() => selectedProfessional = professional);
-                      },
-                    ),
-                    const SizedBox(height: 16),
-                    AppointmentsList(
-                      appointments: appointments,
-                      selectedDate: selectedDate,
-                      selectedFilter: selectedFilter,
-                      selectedProfessional: selectedProfessional,
-                      controller: _listController,
-                    ),
-                    const SizedBox(height: 100),
-                  ],
-                ),
-              ),
+            AppointmentsCalendar(
+              selectedDate: selectedDate,
+              onDateSelected: _onDateSelected,
+              calendarController: _calendarController,
+              appointments: appointments,
+              navigateMonth: _navigateMonth,
             ),
+            const SizedBox(height: 16),
+            AppointmentsList(
+              selectedDate: selectedDate,
+              appointments: appointments,
+            ),
+            const SizedBox(height: 100),
           ],
         ),
       ),
