@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-
-import '../../../core/theme/app_colors.dart';
 import '../../widgets/home/bottom_nav_bar.dart';
 import '../../widgets/appoinments/appointments_calendar.dart';
 import '../../widgets/appoinments/appointments_list.dart';
 import '../../utils/appointment_utils.dart';
+import '../booking/book_an_appoinment.dart';
 
 class Appointments extends StatefulWidget {
   const Appointments({super.key});
@@ -55,14 +54,49 @@ class _AppointmentsState extends State<Appointments>
         automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
         elevation: 0,
-        title: const Text(
-          'Appointments',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 22,
-            color: AppColors.darkText,
-          ),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(
+              'Appointments',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 22,
+                color: Colors.black,
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const BookAnAppointment(),
+                  ),
+                );
+              },
+              child: Container(
+                height: 48,
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF3F1FF),
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: const Color(0xFF3D2EFF), width: 1),
+                ),
+                child: const Center(
+                  child: Text(
+                    'Bookings',
+                    style: TextStyle(
+                      color: Color(0xFF3D2EFF),
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
+        toolbarHeight: 70,
       ),
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
