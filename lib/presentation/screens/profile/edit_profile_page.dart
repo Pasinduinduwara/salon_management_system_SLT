@@ -46,27 +46,38 @@ class _EditProfilePageState extends State<EditProfilePage> {
     } else {
       selectedSalonType = null;
     }
-    final workingHours = widget.salonData['workingHours'] ?? {};
-    if (workingHours is Map<String, dynamic>) {
-      final start = workingHours['start'] ?? '';
-      final end = workingHours['end'] ?? '';
-      if (start is String && start.isNotEmpty) {
-        final parts = start.split(":");
-        if (parts.length == 2) {
-          final hour = int.tryParse(parts[0]) ?? 9;
-          final minute = int.tryParse(parts[1].split(' ')[0]) ?? 0;
-          startTime = TimeOfDay(hour: hour, minute: minute);
-        }
-      }
-      if (end is String && end.isNotEmpty) {
-        final parts = end.split(":");
-        if (parts.length == 2) {
-          final hour = int.tryParse(parts[0]) ?? 19;
-          final minute = int.tryParse(parts[1].split(' ')[0]) ?? 0;
-          endTime = TimeOfDay(hour: hour, minute: minute);
-        }
-      }
+    final workingHoursRaw = widget.salonData['workingHours'] ?? '';
+    String start = '';
+    String end = '';
+    if (workingHoursRaw is Map<String, dynamic>) {
+      start = workingHoursRaw['start'] ?? '';
+      end = workingHoursRaw['end'] ?? '';
+    } else if (workingHoursRaw is String) {
+      final parts = workingHoursRaw.split('-');
+      if (parts.isNotEmpty) start = parts[0].trim();
+      if (parts.length > 1) end = parts[1].trim();
     }
+    // parse times like "09:00 am", "9:00pm", or "09:00"
+    TimeOfDay? parseTimeString(Object? value, {required TimeOfDay fallback}) {
+      if (value is! String || value.trim().isEmpty) return fallback;
+      final s = value.trim().toLowerCase();
+      final regex = RegExp(r'^(\d{1,2}):(\d{2})(?:\s*([ap]m))?$');
+      final m = regex.firstMatch(s);
+      if (m != null) {
+        int h = int.tryParse(m.group(1)!) ?? fallback.hour;
+        final int min = int.tryParse(m.group(2)!) ?? fallback.minute;
+        final String? period = m.group(3);
+        if (period != null) {
+          if (period == 'pm' && h != 12) h = (h % 12) + 12;
+          if (period == 'am' && h == 12) h = 0;
+        }
+        return TimeOfDay(hour: h, minute: min);
+      }
+      return fallback;
+    }
+
+    startTime = parseTimeString(start, fallback: startTime) ?? startTime;
+    endTime = parseTimeString(end, fallback: endTime) ?? endTime;
   }
 
   @override
@@ -85,10 +96,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
       final id = widget.salonData['id'] ?? widget.salonData['_id'];
       if (id == null) throw Exception('Salon ID not found');
       String formatTime(TimeOfDay t) {
-        final hour = t.hour.toString().padLeft(2, '0');
+        final hour = t.hourOfPeriod == 0 ? 12 : t.hourOfPeriod;
+        final hourStr = hour.toString().padLeft(2, '0');
         final minute = t.minute.toString().padLeft(2, '0');
         final period = t.period == DayPeriod.am ? 'am' : 'pm';
-        return '$hour:$minute $period';
+        return '$hourStr:$minute $period';
       }
 
       await AuthService.updateOwnerProfile(
