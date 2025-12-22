@@ -8,6 +8,7 @@ import '../auth/login_screen.dart';
 import 'help_support_page.dart';
 import 'security_page.dart';
 import 'terms_and_conditions_page.dart';
+import 'edit_profile_page.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -321,7 +322,17 @@ class _ProfileState extends State<Profile> {
                     ),
                   ),
                   onPressed: () {
-                    // Add edit functionality
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            EditProfilePage(salonData: salonData!),
+                      ),
+                    ).then((value) {
+                      if (value == true) {
+                        _loadProfile();
+                      }
+                    });
                   },
                 ),
               ),
