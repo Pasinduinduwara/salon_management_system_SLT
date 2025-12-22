@@ -5,6 +5,7 @@ import '../../widgets/home/bottom_nav_bar.dart';
 import '../promotions/promotions_page.dart';
 import '../feedbacks/feedbacks.dart';
 import '../auth/login_screen.dart';
+import 'help_support_page.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -18,6 +19,7 @@ class _ProfileState extends State<Profile> {
     required IconData icon,
     required String label,
     required VoidCallback onTap,
+    Color iconColor = Colors.grey,
   }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6.0),
@@ -32,7 +34,7 @@ class _ProfileState extends State<Profile> {
             padding: const EdgeInsets.symmetric(horizontal: 18),
             child: Row(
               children: [
-                Icon(icon, size: 26, color: Colors.grey[700]),
+                Icon(icon, size: 26, color: iconColor),
                 const SizedBox(width: 18),
                 Expanded(
                   child: Text(
@@ -345,6 +347,7 @@ class _ProfileState extends State<Profile> {
                   _buildSettingsButton(
                     icon: Icons.campaign_outlined,
                     label: 'Promotions',
+                    iconColor: Colors.orange,
                     onTap: () {
                       Navigator.push(
                         context,
@@ -357,6 +360,7 @@ class _ProfileState extends State<Profile> {
                   _buildSettingsButton(
                     icon: Icons.chat_bubble_outline,
                     label: 'Feedbacks',
+                    iconColor: Colors.green,
                     onTap: () {
                       Navigator.push(
                         context,
@@ -379,7 +383,15 @@ class _ProfileState extends State<Profile> {
                   _buildSettingsButton(
                     icon: Icons.help_outline,
                     label: 'Help & Support',
-                    onTap: () {},
+                    iconColor: Colors.blue,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => HelpSupportPage(),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
