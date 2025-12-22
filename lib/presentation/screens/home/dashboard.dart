@@ -230,7 +230,7 @@ class _DashboardState extends State<Dashboard> {
                       child: Stack(
                         clipBehavior: Clip.none,
                         children: [
-                          // Diamond shape decoration - top right
+                          // Diamond shape decoration
                           Positioned(
                             right: -10,
                             top: -15,
@@ -293,7 +293,7 @@ class _DashboardState extends State<Dashboard> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
-                                "Appointments",
+                                "Today's Appointments",
                                 style: TextStyle(
                                   fontSize: 18,
                                   color: Color(0xFF1A1A1A),
@@ -301,23 +301,27 @@ class _DashboardState extends State<Dashboard> {
                                 ),
                               ),
                               SizedBox(height: 4),
-                              Text(
-                                '12',
-                                style: TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w700,
-                                  color: Color(0xFF1A1A1A),
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                              SizedBox(height: 4),
-                              Text(
-                                '3/12 Completed',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Color(0xFF4A4A4A),
-                                  fontWeight: FontWeight.w400,
-                                ),
+                              Row(
+                                children: [
+                                  Text(
+                                    '12',
+                                    style: TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.w700,
+                                      color: Color(0xFF1A1A1A),
+                                      letterSpacing: 0.5,
+                                    ),
+                                  ),
+                                  SizedBox(width: 20),
+                                  Text(
+                                    '3/12 Completed',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Color(0xFF4A4A4A),
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
@@ -332,7 +336,7 @@ class _DashboardState extends State<Dashboard> {
 
               // Actions Section Title
               const Text(
-                'Actions',
+                'Quick Actions',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
@@ -380,7 +384,7 @@ class _DashboardState extends State<Dashboard> {
                     ),
                     DashboardActionButton(
                       icon: Icons.local_offer_outlined,
-                      label: 'Promotions',
+                      label: 'Add\nPromotions',
                       onTap: () {
                         Navigator.push(
                           context,
