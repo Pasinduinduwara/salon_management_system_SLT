@@ -39,21 +39,26 @@ class _WorkingHoursPickerState extends State<WorkingHoursPicker> {
               hourMinuteTextColor: const Color(0xFF1565C0),
               dialHandColor: const Color(0xFF1565C0),
               dialBackgroundColor: const Color(0xFFF5F5F5),
-              dialTextColor: MaterialStateColor.resolveWith((states) =>
-                  states.contains(MaterialState.selected)
-                      ? Colors.white
-                      : const Color(0xFF1565C0)),
+              dialTextColor: MaterialStateColor.resolveWith(
+                (states) => states.contains(MaterialState.selected)
+                    ? Colors.white
+                    : const Color(0xFF1565C0),
+              ),
               entryModeIconColor: const Color(0xFF1565C0),
-              dayPeriodColor: MaterialStateColor.resolveWith((states) =>
-                  states.contains(MaterialState.selected)
-                      ? const Color(0xFF1565C0)
-                      : Colors.transparent),
-              dayPeriodTextColor: MaterialStateColor.resolveWith((states) =>
-                  states.contains(MaterialState.selected)
-                      ? Colors.white
-                      : const Color(0xFF1565C0)),
-              dayPeriodBorderSide:
-                  const BorderSide(color: Color(0xFF1565C0), width: 1),
+              dayPeriodColor: MaterialStateColor.resolveWith(
+                (states) => states.contains(MaterialState.selected)
+                    ? const Color(0xFF1565C0)
+                    : Colors.transparent,
+              ),
+              dayPeriodTextColor: MaterialStateColor.resolveWith(
+                (states) => states.contains(MaterialState.selected)
+                    ? Colors.white
+                    : const Color(0xFF1565C0),
+              ),
+              dayPeriodBorderSide: const BorderSide(
+                color: Color(0xFF1565C0),
+                width: 1,
+              ),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(24),
               ),
@@ -107,10 +112,7 @@ class _WorkingHoursPickerState extends State<WorkingHoursPicker> {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: Colors.grey.shade300,
-                      width: 1.5,
-                    ),
+                    border: Border.all(color: Colors.grey.shade300, width: 1.5),
                   ),
                   child: Row(
                     children: [
@@ -143,10 +145,7 @@ class _WorkingHoursPickerState extends State<WorkingHoursPicker> {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: Colors.grey.shade300,
-                      width: 1.5,
-                    ),
+                    border: Border.all(color: Colors.grey.shade300, width: 1.5),
                   ),
                   child: Row(
                     children: [
