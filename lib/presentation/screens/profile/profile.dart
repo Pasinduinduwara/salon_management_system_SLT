@@ -7,6 +7,7 @@ import '../feedbacks/feedbacks.dart';
 import '../auth/login_screen.dart';
 import 'help_support_page.dart';
 import 'security_page.dart';
+import 'terms_and_conditions_page.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -372,9 +373,17 @@ class _ProfileState extends State<Profile> {
                     },
                   ),
                   _buildSettingsButton(
-                    icon: Icons.security_outlined,
-                    label: 'Security',
-                    onTap: () {},
+                    icon: Icons.description_outlined,
+                    label: 'Terms and Conditions',
+                    iconColor: Colors.deepPurple,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => TermsAndConditionsPage(),
+                        ),
+                      );
+                    },
                   ),
                   _buildSettingsButton(
                     icon: Icons.security_outlined,
