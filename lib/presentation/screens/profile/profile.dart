@@ -6,6 +6,7 @@ import '../promotions/promotions_page.dart';
 import '../feedbacks/feedbacks.dart';
 import '../auth/login_screen.dart';
 import 'help_support_page.dart';
+import 'security_page.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -376,9 +377,15 @@ class _ProfileState extends State<Profile> {
                     onTap: () {},
                   ),
                   _buildSettingsButton(
-                    icon: Icons.privacy_tip_outlined,
-                    label: 'Privacy',
-                    onTap: () {},
+                    icon: Icons.security_outlined,
+                    label: 'Security',
+                    iconColor: Colors.red,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => SecurityPage()),
+                      );
+                    },
                   ),
                   _buildSettingsButton(
                     icon: Icons.help_outline,
