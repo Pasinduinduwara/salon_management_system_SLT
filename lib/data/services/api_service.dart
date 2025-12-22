@@ -6,24 +6,38 @@ import 'package:path/path.dart' as path;
 import 'package:mime/mime.dart';
 
 class ApiService {
+  // ---------------- PUT with Bearer Token ----------------
+  static Future<http.Response> putWithToken(
+    String endpoint,
+    Map body,
+    String token,
+  ) async {
+    return http.put(
+      Uri.parse('$baseUrl$endpoint'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(body),
+    );
+  }
+
   // Hosted backend base URL
   static const String baseUrl =
       'https://saloon-booking-system-backend-v2.onrender.com/api';
 
   // ---------------- POST JSON ----------------
   static Future<http.Response> post(
-      String endpoint, Map body,
-      {Map<String, String>? headers}) async {
+    String endpoint,
+    Map body, {
+    Map<String, String>? headers,
+  }) async {
     final uri = Uri.parse('$baseUrl$endpoint');
 
     final defaultHeaders = {'Content-Type': 'application/json'};
     if (headers != null) defaultHeaders.addAll(headers);
 
-    return http.post(
-      uri,
-      headers: defaultHeaders,
-      body: jsonEncode(body),
-    );
+    return http.post(uri, headers: defaultHeaders, body: jsonEncode(body));
   }
 
   // ---------------- Login wrapper ----------------
@@ -33,12 +47,12 @@ class ApiService {
 
   // ---------------- Multipart Request ----------------
   static Future<http.StreamedResponse> multipartRequest(
-      String endpoint,
-      Map<String, String> fields, {
-        File? imageFile,
-        String imageFieldName = 'image',
-        Map<String, String>? headers,
-      }) async {
+    String endpoint,
+    Map<String, String> fields, {
+    File? imageFile,
+    String imageFieldName = 'image',
+    Map<String, String>? headers,
+  }) async {
     final uri = Uri.parse('$baseUrl$endpoint');
     final request = http.MultipartRequest('POST', uri);
 
@@ -67,12 +81,14 @@ class ApiService {
 
   // ---------------- GET with Bearer Token ----------------
   static Future<http.Response> getWithToken(
-      String endpoint, String token) async {
+    String endpoint,
+    String token,
+  ) async {
     return http.get(
       Uri.parse('$baseUrl$endpoint'),
       headers: {
         'Authorization': 'Bearer $token',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
     );
   }
