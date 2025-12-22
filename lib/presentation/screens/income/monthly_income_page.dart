@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import '../../widgets/home/bottom_nav_bar.dart';
 
-class PromotionsPage extends StatelessWidget {
-  const PromotionsPage({Key? key}) : super(key: key);
+class MonthlyIncomePage extends StatelessWidget {
+  const MonthlyIncomePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -10,7 +11,7 @@ class PromotionsPage extends StatelessWidget {
         backgroundColor: Colors.white,
         elevation: 0,
         title: const Text(
-          'Promotions',
+          'Monthly Income',
           style: TextStyle(
             color: Colors.black,
             fontSize: 22,
@@ -19,7 +20,7 @@ class PromotionsPage extends StatelessWidget {
         ),
       ),
       backgroundColor: Colors.white,
-      body: const Center(child: Text('No promotions available.')),
+      bottomNavigationBar: const BottomNavBar(currentIndex: 3),
     );
   }
 }
