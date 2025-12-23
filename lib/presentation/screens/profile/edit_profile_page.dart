@@ -159,10 +159,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 40),
+                const SizedBox(height: 6),
                 SalonNameFormField(controller: nameController),
-                const SizedBox(height: 24),
-                // Email field (not editable for now)
+                const SizedBox(height: 16),
+                // Email field
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -174,7 +174,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         color: Colors.black87,
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 4),
                     TextFormField(
                       controller: emailController,
                       readOnly: true,
@@ -204,21 +204,21 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           ),
                         ),
                         contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 20,
+                          horizontal: 16,
+                          vertical: 12,
                         ),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 16),
                 SalonTypeDropdown(
                   selectedSalonType: selectedSalonType,
                   onChanged: (value) =>
                       setState(() => selectedSalonType = value),
                   salonTypes: salonTypes,
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 16),
                 WorkingHoursPicker(
                   startTime: startTime,
                   endTime: endTime,
@@ -226,9 +226,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       setState(() => startTime = time),
                   onEndTimeChanged: (time) => setState(() => endTime = time),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 16),
                 LocationFormField(controller: locationController),
-                const SizedBox(height: 40),
+                const SizedBox(height: 16),
                 SizedBox(
                   width: double.infinity,
                   height: 54,
@@ -258,7 +258,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           ),
                   ),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 12),
               ],
             ),
           ),

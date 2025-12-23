@@ -181,7 +181,7 @@ class _ManageScreenState extends State<ManageScreen> {
                     ),
                     contentPadding: const EdgeInsets.symmetric(
                       horizontal: 16,
-                      vertical: 14,
+                      vertical: 12,
                     ),
                   ),
                 ),

@@ -18,7 +18,7 @@ class LocationFormField extends StatelessWidget {
             color: Colors.black87,
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 4),
         TextFormField(
           controller: controller,
           readOnly: true,
@@ -57,8 +57,8 @@ class LocationFormField extends StatelessWidget {
               borderSide: const BorderSide(color: Colors.red, width: 2.0),
             ),
             contentPadding: const EdgeInsets.symmetric(
-              horizontal: 20,
-              vertical: 20,
+              horizontal: 16,
+              vertical: 12,
             ),
             suffixIcon: Icon(Icons.location_on, color: Colors.grey.shade400),
           ),

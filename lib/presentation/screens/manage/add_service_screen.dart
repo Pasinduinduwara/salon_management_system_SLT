@@ -208,7 +208,7 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
                       ),
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 16,
-                        vertical: 16,
+                        vertical: 12,
                       ),
                     ),
                     validator: (value) {
@@ -233,7 +233,7 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
                       ),
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 16,
-                        vertical: 16,
+                        vertical: 12,
                       ),
                     ),
                     validator: (value) {
@@ -259,7 +259,7 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
                       ),
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 16,
-                        vertical: 16,
+                        vertical: 12,
                       ),
                       alignLabelWithHint: true,
                     ),
@@ -287,7 +287,7 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
                       ),
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 16,
-                        vertical: 16,
+                        vertical: 12,
                       ),
                     ),
                     validator: (value) {
@@ -313,7 +313,7 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
                       ),
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 16,
-                        vertical: 16,
+                        vertical: 12,
                       ),
                     ),
                     items: _durationOptions.map((String duration) {
@@ -343,7 +343,7 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
                       ),
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 16,
-                        vertical: 16,
+                        vertical: 12,
                       ),
                     ),
                     items: _genderOptions.map((String gender) {

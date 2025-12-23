@@ -100,15 +100,15 @@ class _WorkingHoursPickerState extends State<WorkingHoursPicker> {
             color: Colors.black87,
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 4),
         Row(
           children: [
             Expanded(
               child: GestureDetector(
                 onTap: () => _selectTime(true),
                 child: Container(
-                  height: 64,
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  height: 52,
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(12),
@@ -135,13 +135,13 @@ class _WorkingHoursPickerState extends State<WorkingHoursPicker> {
                 ),
               ),
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: 12),
             Expanded(
               child: GestureDetector(
                 onTap: () => _selectTime(false),
                 child: Container(
-                  height: 64,
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  height: 52,
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(12),

@@ -30,10 +30,10 @@ class _SalonTypeDropdownState extends State<SalonTypeDropdown> {
             color: Colors.black87,
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 4),
         Container(
-          height: 64,
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          height: 52,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(12),

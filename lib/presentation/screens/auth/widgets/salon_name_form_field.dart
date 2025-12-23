@@ -18,7 +18,7 @@ class SalonNameFormField extends StatelessWidget {
             color: Colors.black87,
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 4),
         TextFormField(
           controller: controller,
           validator: (value) {
@@ -67,8 +67,8 @@ class SalonNameFormField extends StatelessWidget {
               ),
             ),
             contentPadding: const EdgeInsets.symmetric(
-              horizontal: 20,
-              vertical: 20,
+              horizontal: 16,
+              vertical: 12,
             ),
           ),
         ),
