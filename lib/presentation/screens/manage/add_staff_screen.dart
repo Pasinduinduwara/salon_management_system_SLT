@@ -7,7 +7,7 @@ class AddStaffScreen extends StatefulWidget {
   final List<String> availableServices;
 
   const AddStaffScreen({Key? key, required this.availableServices})
-      : super(key: key);
+    : super(key: key);
 
   @override
   State<AddStaffScreen> createState() => _AddStaffScreenState();
@@ -36,7 +36,7 @@ class _AddStaffScreenState extends State<AddStaffScreen> {
     'Thursday',
     'Friday',
     'Saturday',
-    'Sunday'
+    'Sunday',
   ];
 
   @override
@@ -131,8 +131,10 @@ class _AddStaffScreenState extends State<AddStaffScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                leading:
-                const Icon(Icons.photo_library, color: Color(0xFF0BA5E9)),
+                leading: const Icon(
+                  Icons.photo_library,
+                  color: Color(0xFF0BA5E9),
+                ),
                 title: const Text('Gallery'),
                 onTap: () {
                   Navigator.pop(context);
@@ -217,8 +219,7 @@ class _AddStaffScreenState extends State<AddStaffScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        List<String> tempSelected =
-        _availabilityController.text.isEmpty
+        List<String> tempSelected = _availabilityController.text.isEmpty
             ? []
             : _availabilityController.text.split(', ');
         return StatefulBuilder(
@@ -343,82 +344,6 @@ class _AddStaffScreenState extends State<AddStaffScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // // Image Picker Section
-                  // Container(
-                  //   decoration: BoxDecoration(
-                  //     color: const Color(0xFFF5F5F5),
-                  //     borderRadius: BorderRadius.circular(16),
-                  //     border: Border.all(
-                  //       color: const Color(0xFFE0E0E0),
-                  //       width: 1,
-                  //     ),
-                  //   ),
-                  //   child: _selectedImage != null
-                  //       ? Stack(
-                  //     children: [
-                  //       ClipRRect(
-                  //         borderRadius: BorderRadius.circular(16),
-                  //         child: Image.file(
-                  //           _selectedImage!,
-                  //           height: 220,
-                  //           width: double.infinity,
-                  //           fit: BoxFit.cover,
-                  //         ),
-                  //       ),
-                  //       Positioned(
-                  //         top: 12,
-                  //         right: 12,
-                  //         child: Container(
-                  //           decoration: BoxDecoration(
-                  //             color: Colors.black.withOpacity(0.6),
-                  //             shape: BoxShape.circle,
-                  //           ),
-                  //           child: IconButton(
-                  //             icon: const Icon(
-                  //               Icons.close,
-                  //               color: Colors.white,
-                  //               size: 22,
-                  //             ),
-                  //             onPressed: _removeImage,
-                  //           ),
-                  //         ),
-                  //       ),
-                  //     ],
-                  //   )
-                  //       : InkWell(
-                  //     onTap: _showImageSourceDialog,
-                  //     borderRadius: BorderRadius.circular(16),
-                  //     child: Container(
-                  //       padding: const EdgeInsets.symmetric(vertical: 60),
-                  //       child: Column(
-                  //         children: [
-                  //           Icon(
-                  //             Icons.person_add_alt_1,
-                  //             size: 64,
-                  //             color: Colors.grey.shade500,
-                  //           ),
-                  //           const SizedBox(height: 12),
-                  //           Text(
-                  //             'Add Professional Photo',
-                  //             style: TextStyle(
-                  //               fontSize: 18,
-                  //               color: Colors.grey.shade700,
-                  //               fontWeight: FontWeight.w600,
-                  //             ),
-                  //           ),
-                  //           const SizedBox(height: 6),
-                  //           Text(
-                  //             'Tap to select from gallery or camera',
-                  //             style: TextStyle(
-                  //               fontSize: 14,
-                  //               color: Colors.grey.shade500,
-                  //             ),
-                  //           ),
-                  //         ],
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
                   const SizedBox(height: 10),
                   TextFormField(
                     controller: _nameController,
@@ -434,7 +359,7 @@ class _AddStaffScreenState extends State<AddStaffScreen> {
                       ),
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 16,
-                        vertical: 16,
+                        vertical: 12,
                       ),
                     ),
                     validator: (value) {
@@ -446,7 +371,7 @@ class _AddStaffScreenState extends State<AddStaffScreen> {
                   ),
                   const SizedBox(height: 16),
                   DropdownButtonFormField<String>(
-                    value: _selectedGender,
+                    initialValue: _selectedGender,
                     decoration: InputDecoration(
                       labelText: 'Select Gender',
                       filled: true,
@@ -457,7 +382,7 @@ class _AddStaffScreenState extends State<AddStaffScreen> {
                       ),
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 16,
-                        vertical: 16,
+                        vertical: 12,
                       ),
                     ),
                     items: _genderOptions.map((String gender) {
@@ -491,7 +416,7 @@ class _AddStaffScreenState extends State<AddStaffScreen> {
                       ),
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 16,
-                        vertical: 16,
+                        vertical: 12,
                       ),
                       suffixIcon: const Icon(Icons.arrow_drop_down),
                     ),
@@ -519,7 +444,7 @@ class _AddStaffScreenState extends State<AddStaffScreen> {
                       ),
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 16,
-                        vertical: 16,
+                        vertical: 12,
                       ),
                       suffixIcon: const Icon(Icons.arrow_drop_down),
                     ),
@@ -545,7 +470,7 @@ class _AddStaffScreenState extends State<AddStaffScreen> {
                       ),
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 16,
-                        vertical: 16,
+                        vertical: 12,
                       ),
                     ),
                     validator: (value) {
@@ -568,120 +493,122 @@ class _AddStaffScreenState extends State<AddStaffScreen> {
                     ),
                     child: _selectedImage != null
                         ? Stack(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Image.file(
-                            _selectedImage!,
-                            height: 140,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        Positioned(
-                          top: 8,
-                          right: 8,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.red.shade500,
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.2),
-                                  blurRadius: 8,
-                                  offset: const Offset(0, 2),
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: Image.file(
+                                  _selectedImage!,
+                                  height: 140,
+                                  width: double.infinity,
+                                  fit: BoxFit.cover,
                                 ),
-                              ],
-                            ),
-                            child: IconButton(
-                              icon: const Icon(
-                                Icons.delete_outline,
-                                color: Colors.white,
-                                size: 20,
                               ),
-                              onPressed: _removeImage,
-                              padding: const EdgeInsets.all(8),
-                              constraints: const BoxConstraints(),
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          bottom: 8,
-                          left: 8,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 6,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.black.withOpacity(0.7),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Icon(
-                                  Icons.check_circle,
-                                  color: Colors.white,
-                                  size: 16,
-                                ),
-                                const SizedBox(width: 6),
-                                Text(
-                                  _imageFileName ?? 'Image selected',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500,
+                              Positioned(
+                                top: 8,
+                                right: 8,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.red.shade500,
+                                    shape: BoxShape.circle,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.2),
+                                        blurRadius: 8,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
                                   ),
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
+                                  child: IconButton(
+                                    icon: const Icon(
+                                      Icons.delete_outline,
+                                      color: Colors.white,
+                                      size: 20,
+                                    ),
+                                    onPressed: _removeImage,
+                                    padding: const EdgeInsets.all(8),
+                                    constraints: const BoxConstraints(),
+                                  ),
                                 ),
-                              ],
+                              ),
+                              Positioned(
+                                bottom: 8,
+                                left: 8,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 6,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.black.withOpacity(0.7),
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Icon(
+                                        Icons.check_circle,
+                                        color: Colors.white,
+                                        size: 16,
+                                      ),
+                                      const SizedBox(width: 6),
+                                      Text(
+                                        _imageFileName ?? 'Image selected',
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+                        : InkWell(
+                            onTap: _showImageSourceDialog,
+                            borderRadius: BorderRadius.circular(12),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(vertical: 28),
+                              child: Column(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(16),
+                                    decoration: BoxDecoration(
+                                      color: const Color(
+                                        0xFF0BA5E9,
+                                      ).withOpacity(0.1),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: const Icon(
+                                      Icons.add_photo_alternate_rounded,
+                                      size: 40,
+                                      color: Color(0xFF0BA5E9),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  const Text(
+                                    'Add Service Image',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Color(0xFF1A1A1A),
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    'Gallery or Camera',
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      color: Colors.grey.shade600,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    )
-                        : InkWell(
-                      onTap: _showImageSourceDialog,
-                      borderRadius: BorderRadius.circular(12),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 28),
-                        child: Column(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(16),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFF0BA5E9).withOpacity(0.1),
-                                shape: BoxShape.circle,
-                              ),
-                              child: const Icon(
-                                Icons.add_photo_alternate_rounded,
-                                size: 40,
-                                color: Color(0xFF0BA5E9),
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            const Text(
-                              'Add Service Image',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Color(0xFF1A1A1A),
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              'Gallery or Camera',
-                              style: TextStyle(
-                                fontSize: 13,
-                                color: Colors.grey.shade600,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
                   ),
                   const SizedBox(height: 16),
                   const SizedBox(height: 24),
@@ -706,67 +633,67 @@ class _AddStaffScreenState extends State<AddStaffScreen> {
                     ),
                     child: _selectedCertificate != null
                         ? ListTile(
-                      leading: const Icon(
-                        Icons.insert_drive_file,
-                        color: Color(0xFF0BA5E9),
-                        size: 32,
-                      ),
-                      title: Text(
-                        _certificateFileName ?? 'Certificate',
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      trailing: IconButton(
-                        icon: const Icon(Icons.close, color: Colors.red),
-                        onPressed: _removeCertificate,
-                      ),
-                    )
-                        : InkWell(
-                      onTap: _pickCertificate,
-                      borderRadius: BorderRadius.circular(12),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 20,
-                        ),
-                        child: Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Icon(
-                                Icons.upload_file,
-                                color: Colors.grey.shade600,
-                                size: 24,
-                              ),
+                            leading: const Icon(
+                              Icons.insert_drive_file,
+                              color: Color(0xFF0BA5E9),
+                              size: 32,
                             ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Text(
-                                'Choose File',
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  color: Colors.grey.shade700,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                            Text(
-                              'No file chosen',
-                              style: TextStyle(
+                            title: Text(
+                              _certificateFileName ?? 'Certificate',
+                              style: const TextStyle(
                                 fontSize: 14,
-                                color: Colors.grey.shade500,
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-                    ),
+                            trailing: IconButton(
+                              icon: const Icon(Icons.close, color: Colors.red),
+                              onPressed: _removeCertificate,
+                            ),
+                          )
+                        : InkWell(
+                            onTap: _pickCertificate,
+                            borderRadius: BorderRadius.circular(12),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 20,
+                              ),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Icon(
+                                      Icons.upload_file,
+                                      color: Colors.grey.shade600,
+                                      size: 24,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Text(
+                                      'Choose File',
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        color: Colors.grey.shade700,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ),
+                                  Text(
+                                    'No file chosen',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.grey.shade500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                   ),
                   const SizedBox(height: 32),
                   Row(

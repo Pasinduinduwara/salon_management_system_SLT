@@ -94,7 +94,7 @@ class _ReplyToFeedbackPageState extends State<ReplyToFeedbackPage> {
               children: [
                 const SizedBox(height: 32),
                 
-                UserProfileWidget(
+                const UserProfileWidget(
                   name: 'Sophia Bennett',
                   email: 'sophiabennett@gmail.com',
                 ),
@@ -102,7 +102,7 @@ class _ReplyToFeedbackPageState extends State<ReplyToFeedbackPage> {
                 const SizedBox(height: 28),
                 
                 // Star Rating
-                StarRatingWidget(rating: 5.0),
+                const StarRatingWidget(rating: 5.0),
                 
                 const SizedBox(height: 20),
                 

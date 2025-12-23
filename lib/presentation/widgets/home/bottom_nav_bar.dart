@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:owner_salon_management/presentation/screens/appoinments/appoinments.dart';
-import 'package:owner_salon_management/presentation/screens/feedbacks/more.dart';
-
 import '../../screens/home/dashboard.dart';
+import '../../screens/income/monthly_income_page.dart';
 import '../../screens/manage/manage_screen.dart';
+import '../../screens/profile/profile.dart';
 
 class BottomNavBar extends StatelessWidget {
   final int currentIndex;
@@ -28,9 +28,14 @@ class BottomNavBar extends StatelessWidget {
         );
         break;
       case 3:
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const MorePage()),
-      );
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const MonthlyIncomePage()),
+        );
+        break;
+      case 4:
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const Profile()),
+        );
         break;
     }
   }
@@ -71,7 +76,11 @@ class BottomNavBar extends StatelessWidget {
             icon: Icon(Icons.local_offer_outlined),
             label: 'Manage',
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.more_horiz), label: 'More'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.bar_chart_outlined),
+            label: 'Income',
+          ),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
       ),
     );

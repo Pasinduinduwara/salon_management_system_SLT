@@ -193,82 +193,6 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // // Image Picker Section
-                  // Container(
-                  //   decoration: BoxDecoration(
-                  //     color: const Color(0xFFF5F5F5),
-                  //     borderRadius: BorderRadius.circular(36),
-                  //     border: Border.all(
-                  //       color: const Color(0xFFE0E0E0),
-                  //       width: 1,
-                  //     ),
-                  //   ),
-                  //   child: _selectedImage != null
-                  //       ? Stack(
-                  //     children: [
-                  //       ClipRRect(
-                  //         borderRadius: BorderRadius.circular(16),
-                  //         child: Image.file(
-                  //           _selectedImage!,
-                  //           height: 220,
-                  //           width: double.infinity,
-                  //           fit: BoxFit.cover,
-                  //         ),
-                  //       ),
-                  //       Positioned(
-                  //         top: 12,
-                  //         right: 12,
-                  //         child: Container(
-                  //           decoration: BoxDecoration(
-                  //             color: Colors.black.withOpacity(0.6),
-                  //             shape: BoxShape.circle,
-                  //           ),
-                  //           child: IconButton(
-                  //             icon: const Icon(
-                  //               Icons.close,
-                  //               color: Colors.white,
-                  //               size: 22,
-                  //             ),
-                  //             onPressed: _removeImage,
-                  //           ),
-                  //         ),
-                  //       ),
-                  //     ],
-                  //   )
-                  //       : InkWell(
-                  //     onTap: _showImageSourceDialog,
-                  //     borderRadius: BorderRadius.circular(16),
-                  //     child: Container(
-                  //       padding: const EdgeInsets.symmetric(vertical: 60),
-                  //       child: Column(
-                  //         children: [
-                  //           Icon(
-                  //             Icons.add_photo_alternate_outlined,
-                  //             size: 64,
-                  //             color: Colors.grey.shade500,
-                  //           ),
-                  //           const SizedBox(height: 12),
-                  //           Text(
-                  //             'Add Service Image',
-                  //             style: TextStyle(
-                  //               fontSize: 18,
-                  //               color: Colors.grey.shade700,
-                  //               fontWeight: FontWeight.w600,
-                  //             ),
-                  //           ),
-                  //           const SizedBox(height: 6),
-                  //           Text(
-                  //             'Tap to select from gallery or camera',
-                  //             style: TextStyle(
-                  //               fontSize: 14,
-                  //               color: Colors.grey.shade500,
-                  //             ),
-                  //           ),
-                  //         ],
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
                   const SizedBox(height: 24),
                   TextFormField(
                     controller: _nameController,
@@ -284,7 +208,7 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
                       ),
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 16,
-                        vertical: 16,
+                        vertical: 12,
                       ),
                     ),
                     validator: (value) {
@@ -309,7 +233,7 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
                       ),
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 16,
-                        vertical: 16,
+                        vertical: 12,
                       ),
                     ),
                     validator: (value) {
@@ -335,7 +259,7 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
                       ),
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 16,
-                        vertical: 16,
+                        vertical: 12,
                       ),
                       alignLabelWithHint: true,
                     ),
@@ -363,7 +287,7 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
                       ),
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 16,
-                        vertical: 16,
+                        vertical: 12,
                       ),
                     ),
                     validator: (value) {
@@ -378,7 +302,7 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
                   ),
                   const SizedBox(height: 16),
                   DropdownButtonFormField<String>(
-                    value: _selectedDuration,
+                    initialValue: _selectedDuration,
                     decoration: InputDecoration(
                       labelText: 'Duration',
                       filled: true,
@@ -389,7 +313,7 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
                       ),
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 16,
-                        vertical: 16,
+                        vertical: 12,
                       ),
                     ),
                     items: _durationOptions.map((String duration) {
@@ -408,7 +332,7 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
                   ),
                   const SizedBox(height: 16),
                   DropdownButtonFormField<String>(
-                    value: _selectedGender,
+                    initialValue: _selectedGender,
                     decoration: InputDecoration(
                       labelText: 'Gender',
                       filled: true,
@@ -419,7 +343,7 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
                       ),
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 16,
-                        vertical: 16,
+                        vertical: 12,
                       ),
                     ),
                     items: _genderOptions.map((String gender) {

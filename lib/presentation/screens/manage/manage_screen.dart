@@ -26,7 +26,7 @@ class _ManageScreenState extends State<ManageScreen> {
       duration: 60,
       gender: 'Both',
       imageUrl:
-      'https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=400',
+          'https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=400',
     ),
     ServiceModel(
       name: 'Hair Cut',
@@ -36,7 +36,7 @@ class _ManageScreenState extends State<ManageScreen> {
       duration: 60,
       gender: 'Both',
       imageUrl:
-      'https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=400',
+          'https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=400',
     ),
     ServiceModel(
       name: 'Hair Cut',
@@ -46,7 +46,7 @@ class _ManageScreenState extends State<ManageScreen> {
       duration: 60,
       gender: 'Both',
       imageUrl:
-      'https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=400',
+          'https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=400',
     ),
     ServiceModel(
       name: 'Hair Cut',
@@ -56,7 +56,7 @@ class _ManageScreenState extends State<ManageScreen> {
       duration: 60,
       gender: 'Both',
       imageUrl:
-      'https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=400',
+          'https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=400',
     ),
   ];
 
@@ -70,7 +70,7 @@ class _ManageScreenState extends State<ManageScreen> {
       workingHours: '9:00 AM - 6:00 PM',
       photo: null,
       photoPath:
-      'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400',
+          'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400',
     ),
     StaffModel(
       name: 'John Williams',
@@ -81,7 +81,7 @@ class _ManageScreenState extends State<ManageScreen> {
       workingHours: '10:00 AM - 7:00 PM',
       photo: null,
       photoPath:
-      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400',
+          'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400',
     ),
     StaffModel(
       name: 'John Williams',
@@ -92,7 +92,7 @@ class _ManageScreenState extends State<ManageScreen> {
       workingHours: '10:00 AM - 7:00 PM',
       photo: null,
       photoPath:
-      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400',
+          'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400',
     ),
     StaffModel(
       name: 'John Williams',
@@ -103,7 +103,7 @@ class _ManageScreenState extends State<ManageScreen> {
       workingHours: '10:00 AM - 7:00 PM',
       photo: null,
       photoPath:
-      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400',
+          'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400',
     ),
   ];
 
@@ -116,13 +116,12 @@ class _ManageScreenState extends State<ManageScreen> {
         elevation: 0,
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.white,
-        title:const Text(
+        title: const Text(
           'Manage',
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: 24,
-            color: Color(0xFF1A1A1A),
-            letterSpacing: -0.5,
+            fontSize: 22,
+            color: Colors.black,
           ),
         ),
       ),
@@ -182,7 +181,7 @@ class _ManageScreenState extends State<ManageScreen> {
                     ),
                     contentPadding: const EdgeInsets.symmetric(
                       horizontal: 16,
-                      vertical: 14,
+                      vertical: 12,
                     ),
                   ),
                 ),
@@ -209,7 +208,9 @@ class _ManageScreenState extends State<ManageScreen> {
                         }
                       } else {
                         // Navigate to Add Staff Screen
-                        final serviceNames = services.map((s) => s.name).toList();
+                        final serviceNames = services
+                            .map((s) => s.name)
+                            .toList();
                         final newStaff = await Navigator.push<StaffModel>(
                           context,
                           MaterialPageRoute(
@@ -250,19 +251,19 @@ class _ManageScreenState extends State<ManageScreen> {
               Expanded(
                 child: isServicesTab
                     ? ListView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  itemCount: services.length,
-                  itemBuilder: (context, index) {
-                    return ServiceCard(service: services[index]);
-                  },
-                )
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        itemCount: services.length,
+                        itemBuilder: (context, index) {
+                          return ServiceCard(service: services[index]);
+                        },
+                      )
                     : ListView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  itemCount: staff.length,
-                  itemBuilder: (context, index) {
-                    return StaffCard(staff: staff[index]);
-                  },
-                ),
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        itemCount: staff.length,
+                        itemBuilder: (context, index) {
+                          return StaffCard(staff: staff[index]);
+                        },
+                      ),
               ),
             ],
           ),
@@ -286,6 +287,11 @@ Widget _buildTabButton({
       decoration: BoxDecoration(
         color: isSelected ? Colors.grey.shade300 : Colors.transparent,
         borderRadius: BorderRadius.circular(10),
+        border: isSelected
+            ? const Border(
+                bottom: BorderSide(color: Color(0xFF0066CC), width: 3),
+              )
+            : null,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -294,7 +300,7 @@ Widget _buildTabButton({
             icon,
             size: 20,
             color: isSelected
-                ? const Color(0xFF1A1A1A)
+                ? const Color(0xFF0066CC)
                 : const Color(0xFF5C5C5C),
           ),
           const SizedBox(width: 8),
@@ -304,7 +310,7 @@ Widget _buildTabButton({
               fontSize: 15,
               fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
               color: isSelected
-                  ? const Color(0xFF1A1A1A)
+                  ? const Color(0xFF0066CC)
                   : const Color(0xFF757575),
             ),
           ),

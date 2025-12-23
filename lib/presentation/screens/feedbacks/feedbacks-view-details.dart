@@ -41,7 +41,7 @@ class FeedbackDetailsPage extends StatelessWidget {
                 const SizedBox(height: 24),
                 
                 // User Profile Card
-                UserProfileCardWidget(
+                const UserProfileCardWidget(
                   name: 'Sophia Bennett',
                   email: 'sophiabennett@gmail.com',
                 ),
@@ -86,7 +86,7 @@ class FeedbackDetailsPage extends StatelessWidget {
                 
                 const SizedBox(height: 20),
                 
-                RatingSummaryWidget(
+                const RatingSummaryWidget(
                   overallRating: 4.5,
                   reviewCount: 1,
                   ratings: [
@@ -101,7 +101,7 @@ class FeedbackDetailsPage extends StatelessWidget {
                 const SizedBox(height: 24),
                 
                 // Salon and Staff Rating
-                SubRatingsWidget(
+                const SubRatingsWidget(
                   subRatings: [
                     {'label': 'Salon Rating:', 'rating': 5.0},
                     {'label': 'Staff Rating:', 'rating': 4.0},
@@ -122,7 +122,7 @@ class FeedbackDetailsPage extends StatelessWidget {
                 
                 const SizedBox(height: 16),
                 
-                CustomerCommentWidget(
+                const CustomerCommentWidget(
                   comment: 'The service was excellent, and the staff was very friendly. I especially loved the ambiance of the salon. Will definitely come back!',
                 ),
                 
@@ -154,7 +154,7 @@ class FeedbackDetailsPage extends StatelessWidget {
                 
                 const SizedBox(height: 20),
                 
-                ServiceDetailsWidget(
+                const ServiceDetailsWidget(
                   details: [
                     {'label': 'Service:', 'value': 'Haircut and Styling'},
                     {'label': 'Staff:', 'value': 'Emily Carter'},

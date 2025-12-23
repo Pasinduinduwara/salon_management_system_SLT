@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-
 import '../../../data/models/staff_model.dart';
 
 class StaffCard extends StatelessWidget {
@@ -81,22 +80,14 @@ class StaffCard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(12),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // Staff Photo Thumbnail
             Container(
               margin: const EdgeInsets.only(right: 12),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8),
-                child: Container(
-                  height: 60,
-                  width: 60,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF5F5F5),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: _buildPhoto(),
-                ),
+                child: SizedBox(height: 60, width: 60, child: _buildPhoto()),
               ),
             ),
 
@@ -105,32 +96,20 @@ class StaffCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Name and Menu
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          staff.name,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF1A1A1A),
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      // IconButton(
-                      //   icon: const Icon(Icons.more_vert, size: 18),
-                      //   onPressed: () {},
-                      //   padding: EdgeInsets.zero,
-                      //   constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
-                      // ),
-                    ],
+                  // Name
+                  Text(
+                    staff.name,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF1A1A1A),
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-
+                  const SizedBox(height: 4),
                   // Gender and Availability
                   Row(
                     children: [
@@ -177,9 +156,7 @@ class StaffCard extends StatelessWidget {
                       ),
                     ],
                   ),
-
                   const SizedBox(height: 6),
-
                   // Services
                   if (staff.services.isNotEmpty)
                     Row(
@@ -206,60 +183,59 @@ class StaffCard extends StatelessWidget {
                         ),
                       ],
                     ),
+                ],
+              ),
+            ),
 
-                  const SizedBox(height: 8),
-
-                  // Action buttons
-                  Row(
+            // Menu button - centered
+            PopupMenuButton<String>(
+              icon: const Icon(
+                Icons.more_vert,
+                size: 20,
+                color: Color(0xFF757575),
+              ),
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+              onSelected: (value) {
+                if (value == 'edit') {
+                  // Handle edit
+                } else if (value == 'delete') {
+                  _showDeleteConfirmation(context);
+                }
+              },
+              itemBuilder: (context) => [
+                const PopupMenuItem(
+                  value: 'edit',
+                  child: Row(
                     children: [
-                      Expanded(
-                        child: OutlinedButton(
-                          onPressed: () {},
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: const Color(0xFF1A1A1A),
-                            side: const BorderSide(color: Color(0xFFE0E0E0)),
-                            padding: const EdgeInsets.symmetric(vertical: 6),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            minimumSize: const Size(0, 32),
-                          ),
-                          child: const Text(
-                            'Edit',
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
+                      Icon(
+                        Icons.edit_outlined,
+                        size: 18,
+                        color: Color(0xFF1A1A1A),
                       ),
-                      const SizedBox(width: 6),
-                      OutlinedButton(
-                        onPressed: () => _showDeleteConfirmation(context),
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: const Color(0xFFEF5350),
-                          side: const BorderSide(color: Color(0xFFFFCDD2)),
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 6,
-                            horizontal: 12,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          minimumSize: const Size(0, 32),
-                        ),
-                        child: const Text(
-                          'Delete',
-                          style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
+                      SizedBox(width: 8),
+                      Text('Edit'),
+                    ],
+                  ),
+                ),
+                const PopupMenuItem(
+                  value: 'delete',
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.delete_outline,
+                        size: 18,
+                        color: Color(0xFFEF5350),
+                      ),
+                      SizedBox(width: 8),
+                      Text(
+                        'Delete',
+                        style: TextStyle(color: Color(0xFFEF5350)),
                       ),
                     ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ],
         ),
