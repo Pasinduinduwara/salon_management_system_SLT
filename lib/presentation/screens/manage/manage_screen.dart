@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:owner_salon_management/presentation/screens/manage/add_service_screen.dart';
 import '../../../data/models/service_model.dart';
 import '../../../data/models/staff_model.dart';
+import '../../../data/services/auth_service.dart';
+import '../../../data/services/services_service.dart';
+import '../../../data/services/staff_service.dart';
 import '../../widgets/home/bottom_nav_bar.dart';
 import '../../widgets/manage/service_card.dart';
 import '../../widgets/manage/staff_card.dart';
@@ -16,96 +19,94 @@ class ManageScreen extends StatefulWidget {
 
 class _ManageScreenState extends State<ManageScreen> {
   bool isServicesTab = true;
+  bool isLoading = true;
+  String? errorMessage;
+  List<ServiceModel> services = [];
+  List<StaffModel> staff = [];
+  String searchQuery = '';
 
-  final List<ServiceModel> services = [
-    ServiceModel(
-      name: 'Hair Cut',
-      category: 'Hair Services',
-      description: 'Professional haircut with styling',
-      price: 3500,
-      duration: 60,
-      gender: 'Both',
-      imageUrl:
-          'https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=400',
-    ),
-    ServiceModel(
-      name: 'Hair Cut',
-      category: 'Hair Services',
-      description: 'Professional haircut with styling',
-      price: 3500,
-      duration: 60,
-      gender: 'Both',
-      imageUrl:
-          'https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=400',
-    ),
-    ServiceModel(
-      name: 'Hair Cut',
-      category: 'Hair Services',
-      description: 'Professional haircut with styling',
-      price: 3500,
-      duration: 60,
-      gender: 'Both',
-      imageUrl:
-          'https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=400',
-    ),
-    ServiceModel(
-      name: 'Hair Cut',
-      category: 'Hair Services',
-      description: 'Professional haircut with styling',
-      price: 3500,
-      duration: 60,
-      gender: 'Both',
-      imageUrl:
-          'https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=400',
-    ),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _fetchServices();
+    _fetchStaff();
+  }
 
-  final List<StaffModel> staff = [
-    StaffModel(
-      name: 'Sarah Johnson',
-      gender: 'Female',
-      isAvailable: true,
-      services: ['Hair Cut', 'Hair Color', 'Hair Styling'],
-      availability: 'Monday, Tuesday, Wednesday, Thursday, Friday',
-      workingHours: '9:00 AM - 6:00 PM',
-      photo: null,
-      photoPath:
-          'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400',
-    ),
-    StaffModel(
-      name: 'John Williams',
-      gender: 'Male',
-      isAvailable: false,
-      services: ['Hair Cut', 'Beard Trim'],
-      availability: 'Monday, Wednesday, Friday',
-      workingHours: '10:00 AM - 7:00 PM',
-      photo: null,
-      photoPath:
-          'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400',
-    ),
-    StaffModel(
-      name: 'John Williams',
-      gender: 'Male',
-      isAvailable: false,
-      services: ['Hair Cut', 'Beard Trim'],
-      availability: 'Monday, Wednesday, Friday',
-      workingHours: '10:00 AM - 7:00 PM',
-      photo: null,
-      photoPath:
-          'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400',
-    ),
-    StaffModel(
-      name: 'John Williams',
-      gender: 'Male',
-      isAvailable: false,
-      services: ['Hair Cut', 'Beard Trim'],
-      availability: 'Monday, Wednesday, Friday',
-      workingHours: '10:00 AM - 7:00 PM',
-      photo: null,
-      photoPath:
-          'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400',
-    ),
-  ];
+  Future<void> _fetchServices() async {
+    try {
+      setState(() {
+        isLoading = true;
+        errorMessage = null;
+      });
+
+      final profile = await AuthService.getOwnerProfile();
+      final salonId = profile['salon'] != null 
+          ? profile['salon']['id'] 
+          : profile['_id'];
+
+      if (salonId == null) throw Exception('Salon ID not found');
+
+      final fetchedServices = await ServicesService.fetchServices(salonId);
+      
+      setState(() {
+        services = fetchedServices;
+        isLoading = false;
+      });
+    } catch (e) {
+      debugPrint('Fetch Services Error: $e');
+      setState(() {
+        errorMessage = e.toString();
+        isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _fetchStaff() async {
+    try {
+      final profile = await AuthService.getOwnerProfile();
+      final salonId = profile['salon'] != null 
+          ? profile['salon']['id'] 
+          : profile['_id'];
+
+      if (salonId == null) return;
+
+      final fetchedStaff = await StaffService.fetchStaff(salonId);
+      
+      setState(() {
+        staff = fetchedStaff;
+      });
+    } catch (e) {
+      debugPrint('Fetch Staff Error: $e');
+    }
+  }
+
+  Future<void> _editStaff(StaffModel existingStaff) async {
+    final serviceNames = services.map((s) => s.name).toList();
+    final result = await Navigator.push<StaffModel>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddStaffScreen(
+          availableServices: serviceNames,
+          existingStaff: existingStaff,
+        ),
+      ),
+    );
+
+    if (result != null) {
+      _fetchStaff();
+    }
+  }
+
+  Future<void> _editService(ServiceModel service) async {
+    final result = await showDialog<ServiceModel>(
+      context: context,
+      builder: (context) => AddServiceScreen(existingService: service),
+    );
+
+    if (result != null) {
+      _fetchServices();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -164,6 +165,11 @@ class _ManageScreenState extends State<ManageScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: TextField(
+                  onChanged: (value) {
+                    setState(() {
+                      searchQuery = value.toLowerCase();
+                    });
+                  },
                   decoration: InputDecoration(
                     hintText: isServicesTab
                         ? 'Search services...'
@@ -202,9 +208,7 @@ class _ManageScreenState extends State<ManageScreen> {
 
                         // Add the new service to the list if returned
                         if (newService != null) {
-                          setState(() {
-                            services.add(newService);
-                          });
+                          _fetchServices(); // Better to re-fetch to get consistent state
                         }
                       } else {
                         // Navigate to Add Staff Screen
@@ -221,9 +225,7 @@ class _ManageScreenState extends State<ManageScreen> {
 
                         // Add the new staff to the list if returned
                         if (newStaff != null) {
-                          setState(() {
-                            staff.add(newStaff);
-                          });
+                          _fetchStaff();
                         }
                       }
                     },
@@ -249,27 +251,108 @@ class _ManageScreenState extends State<ManageScreen> {
               ),
               const SizedBox(height: 20),
               Expanded(
-                child: isServicesTab
-                    ? ListView.builder(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        itemCount: services.length,
-                        itemBuilder: (context, index) {
-                          return ServiceCard(service: services[index]);
-                        },
-                      )
-                    : ListView.builder(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        itemCount: staff.length,
-                        itemBuilder: (context, index) {
-                          return StaffCard(staff: staff[index]);
-                        },
-                      ),
+                child: isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : errorMessage != null
+                        ? Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Error: $errorMessage',
+                                  style: const TextStyle(color: Colors.red),
+                                  textAlign: TextAlign.center,
+                                ),
+                                const SizedBox(height: 16),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    _fetchServices();
+                                    _fetchStaff();
+                                  },
+                                  child: const Text('Retry'),
+                                ),
+                              ],
+                            ),
+                          )
+                        : isServicesTab
+                            ? _buildServicesList()
+                            : _buildStaffList(),
               ),
             ],
           ),
         ),
       ),
       bottomNavigationBar: const BottomNavBar(currentIndex: 2),
+    );
+  }
+
+  Widget _buildServicesList() {
+    final filteredServices = services
+        .where((s) => s.name.toLowerCase().contains(searchQuery))
+        .toList();
+
+    if (filteredServices.isEmpty) {
+      return const Center(child: Text('No services found'));
+    }
+
+    return RefreshIndicator(
+      onRefresh: _fetchServices,
+      child: ListView.builder(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        itemCount: filteredServices.length,
+        itemBuilder: (context, index) {
+          final service = filteredServices[index];
+          return ServiceCard(
+            service: service,
+            onEdit: () => _editService(service),
+            onDelete: () async {
+              try {
+                await ServicesService.deleteService(service.id!);
+                _fetchServices();
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Delete failed: $e')),
+                );
+              }
+            },
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildStaffList() {
+    final filteredStaff = staff
+        .where((s) => s.name.toLowerCase().contains(searchQuery))
+        .toList();
+
+    if (filteredStaff.isEmpty) {
+      return const Center(child: Text('No professionals found'));
+    }
+
+    return RefreshIndicator(
+      onRefresh: _fetchStaff,
+      child: ListView.builder(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        itemCount: filteredStaff.length,
+        itemBuilder: (context, index) {
+          final staffMember = filteredStaff[index];
+          return StaffCard(
+            staff: staffMember,
+            onEdit: () => _editStaff(staffMember),
+            onDelete: () async {
+              try {
+                await StaffService.deleteStaff(staffMember.id!);
+                _fetchStaff();
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Delete failed: $e')),
+                );
+              }
+            },
+          );
+        },
+      ),
     );
   }
 }

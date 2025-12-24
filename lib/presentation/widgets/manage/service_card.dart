@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'dart:io';
 import '../../../data/models/service_model.dart';
 
 class ServiceCard extends StatelessWidget {
   final ServiceModel service;
   final VoidCallback? onDelete;
+  final VoidCallback? onEdit;
 
-  const ServiceCard({Key? key, required this.service, this.onDelete})
+  const ServiceCard({Key? key, required this.service, this.onDelete, this.onEdit})
     : super(key: key);
 
   void _showDeleteConfirmation(BuildContext context) {
@@ -89,12 +91,19 @@ class ServiceCard extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(8),
                   child: service.imagePath != null
-                      ? Image.file(
-                          File(service.imagePath!),
-                          height: 60,
-                          width: 60,
-                          fit: BoxFit.cover,
-                        )
+                      ? (kIsWeb
+                          ? Image.network(
+                              service.imagePath!,
+                              height: 60,
+                              width: 60,
+                              fit: BoxFit.cover,
+                            )
+                          : Image.file(
+                              File(service.imagePath!),
+                              height: 60,
+                              width: 60,
+                              fit: BoxFit.cover,
+                            ))
                       : Image.network(
                           service.imageUrl!,
                           height: 60,
@@ -228,7 +237,7 @@ class ServiceCard extends StatelessWidget {
               constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
               onSelected: (value) {
                 if (value == 'edit') {
-                  // Handle edit
+                  onEdit?.call();
                 } else if (value == 'delete') {
                   _showDeleteConfirmation(context);
                 }

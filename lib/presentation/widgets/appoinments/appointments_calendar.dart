@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../utils/appointment_utils.dart';
+import '../../../data/models/appoinment.dart';
 
 class AppointmentsCalendar extends StatelessWidget {
   final DateTime selectedDate;
   final void Function(DateTime) onDateSelected;
   final AnimationController? calendarController;
-  final List<Map<String, dynamic>> appointments;
+  final List<Appointment> appointments;
   final void Function(int) navigateMonth;
 
   const AppointmentsCalendar({
@@ -115,7 +116,7 @@ class AppointmentsCalendar extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Row(
-          children: daysOfWeek.map((day) {
+          children: daysOfWeek.map<Widget>((day) {
             return Expanded(
               child: Center(
                 child: Text(

@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:owner_salon_management/presentation/screens/auth/widgets/file_info_display.dart';
 import 'package:owner_salon_management/presentation/screens/auth/widgets/finish_setup_button.dart';
@@ -39,7 +38,7 @@ class UploadSalonImageScreen extends StatefulWidget {
 }
 
 class _UploadSalonImageScreenState extends State<UploadSalonImageScreen> {
-  File? selectedImage;
+  XFile? selectedImage;
   final ImagePicker _picker = ImagePicker();
 
   // … inside _finishSetup()
@@ -187,7 +186,7 @@ class _UploadSalonImageScreenState extends State<UploadSalonImageScreen> {
 
       if (image != null) {
         setState(() {
-          selectedImage = File(image.path);
+          selectedImage = image;
         });
       }
     } catch (e) {

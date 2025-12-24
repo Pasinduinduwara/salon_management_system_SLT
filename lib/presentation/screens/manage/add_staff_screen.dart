@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import '../../../data/models/staff_model.dart';
+import '../../../data/services/auth_service.dart';
+import '../../../data/services/staff_service.dart';
 
 class AddStaffScreen extends StatefulWidget {
   final List<String> availableServices;
+  final StaffModel? existingStaff;
 
-  const AddStaffScreen({Key? key, required this.availableServices})
-    : super(key: key);
+  const AddStaffScreen({
+    Key? key,
+    required this.availableServices,
+    this.existingStaff,
+  }) : super(key: key);
 
   @override
   State<AddStaffScreen> createState() => _AddStaffScreenState();
@@ -22,13 +29,13 @@ class _AddStaffScreenState extends State<AddStaffScreen> {
   final ImagePicker _picker = ImagePicker();
 
   String _selectedGender = 'Male';
-  File? _selectedImage;
-  File? _selectedCertificate;
+  XFile? _selectedImage;
+  XFile? _selectedCertificate;
   String? _imageFileName;
   String? _certificateFileName;
   List<String> _selectedServices = [];
 
-  final List<String> _genderOptions = ['Male', 'Female', 'Other'];
+  final List<String> _genderOptions = ['Male', 'Female'];
   final List<String> _availabilityOptions = [
     'Monday',
     'Tuesday',
@@ -38,6 +45,20 @@ class _AddStaffScreenState extends State<AddStaffScreen> {
     'Saturday',
     'Sunday',
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.existingStaff != null) {
+      final staff = widget.existingStaff!;
+      _nameController.text = staff.name;
+      _selectedGender = staff.gender;
+      _selectedServices = List.from(staff.services);
+      _servicesController.text = _selectedServices.join(', ');
+      _availabilityController.text = staff.availability;
+      _workingHoursController.text = staff.workingHours;
+    }
+  }
 
   @override
   void dispose() {
@@ -59,7 +80,7 @@ class _AddStaffScreenState extends State<AddStaffScreen> {
 
       if (image != null) {
         setState(() {
-          _selectedImage = File(image.path);
+          _selectedImage = image;
           _imageFileName = image.name;
         });
       }
@@ -84,7 +105,7 @@ class _AddStaffScreenState extends State<AddStaffScreen> {
 
       if (photo != null) {
         setState(() {
-          _selectedImage = File(photo.path);
+          _selectedImage = photo;
           _imageFileName = photo.name;
         });
       }
@@ -104,7 +125,7 @@ class _AddStaffScreenState extends State<AddStaffScreen> {
 
       if (file != null) {
         setState(() {
-          _selectedCertificate = File(file.path);
+          _selectedCertificate = file;
           _certificateFileName = file.name;
         });
       }
@@ -289,7 +310,9 @@ class _AddStaffScreenState extends State<AddStaffScreen> {
     });
   }
 
-  void _handleSubmit() {
+  bool _isSubmitting = false;
+
+  void _handleSubmit() async {
     if (_formKey.currentState!.validate()) {
       if (_selectedServices.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -301,15 +324,60 @@ class _AddStaffScreenState extends State<AddStaffScreen> {
         return;
       }
 
-      final staff = StaffModel(
-        name: _nameController.text.trim(),
-        gender: _selectedGender,
-        isAvailable: true,
-        services: _selectedServices,
-        availability: _availabilityController.text.trim(),
-        workingHours: _workingHoursController.text.trim(),
-      );
-      Navigator.of(context).pop(staff);
+      setState(() => _isSubmitting = true);
+
+      try {
+        final profile = await AuthService.getOwnerProfile();
+        final salonId = profile['salon'] != null 
+            ? profile['salon']['id'] 
+            : profile['_id'];
+
+        if (salonId == null) throw Exception('Salon ID not found');
+
+        final staff = StaffModel(
+          id: widget.existingStaff?.id,
+          name: _nameController.text.trim(),
+          gender: _selectedGender,
+          isAvailable: true,
+          services: _selectedServices,
+          availability: _availabilityController.text.trim(),
+          workingHours: _workingHoursController.text.trim(),
+        );
+
+        final StaffModel result;
+        if (widget.existingStaff != null) {
+          result = await StaffService.updateStaff(
+            widget.existingStaff!.id!,
+            staff,
+            imageFile: _selectedImage,
+            certificateFile: _selectedCertificate,
+          );
+        } else {
+          result = await StaffService.addStaff(
+            staff,
+            salonId,
+            imageFile: _selectedImage,
+            certificateFile: _selectedCertificate,
+          );
+        }
+
+        if (mounted) {
+          Navigator.of(context).pop(result);
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Failed to add professional: $e'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      } finally {
+        if (mounted) {
+          setState(() => _isSubmitting = false);
+        }
+      }
     }
   }
 
@@ -325,8 +393,8 @@ class _AddStaffScreenState extends State<AddStaffScreen> {
           icon: const Icon(Icons.arrow_back, color: Color(0xFF1A1A1A)),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: const Text(
-          'Add Professional',
+        title: Text(
+          widget.existingStaff != null ? 'Edit Professional' : 'Add Professional',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 24,
@@ -496,12 +564,19 @@ class _AddStaffScreenState extends State<AddStaffScreen> {
                             children: [
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(12),
-                                child: Image.file(
-                                  _selectedImage!,
-                                  height: 140,
-                                  width: double.infinity,
-                                  fit: BoxFit.cover,
-                                ),
+                                child: kIsWeb
+                                    ? Image.network(
+                                        _selectedImage!.path,
+                                        height: 140,
+                                        width: double.infinity,
+                                        fit: BoxFit.cover,
+                                      )
+                                    : Image.file(
+                                        File(_selectedImage!.path),
+                                        height: 140,
+                                        width: double.infinity,
+                                        fit: BoxFit.cover,
+                                      ),
                               ),
                               Positioned(
                                 top: 8,
@@ -722,7 +797,7 @@ class _AddStaffScreenState extends State<AddStaffScreen> {
                       Expanded(
                         flex: 2,
                         child: ElevatedButton(
-                          onPressed: _handleSubmit,
+                          onPressed: _isSubmitting ? null : _handleSubmit,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.blue.shade900,
                             foregroundColor: Colors.white,
@@ -732,13 +807,22 @@ class _AddStaffScreenState extends State<AddStaffScreen> {
                             ),
                             elevation: 0,
                           ),
-                          child: const Text(
-                            'Add',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
+                          child: _isSubmitting
+                              ? const SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Colors.white,
+                                  ),
+                                )
+                              : Text(
+                                  widget.existingStaff != null ? 'Update' : 'Add',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
                         ),
                       ),
                     ],
