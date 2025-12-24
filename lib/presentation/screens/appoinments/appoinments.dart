@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../widgets/home/bottom_nav_bar.dart';
 import '../../widgets/appoinments/appointments_calendar.dart';
 import '../../widgets/appoinments/appointments_list.dart';
 import '../../utils/appointment_utils.dart';
@@ -118,7 +117,6 @@ class _AppointmentsState extends State<Appointments>
           ],
         ),
       ),
-      bottomNavigationBar: const BottomNavBar(currentIndex: 1),
     );
   }
 }

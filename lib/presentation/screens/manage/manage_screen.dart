@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:owner_salon_management/presentation/screens/manage/add_service_screen.dart';
 import '../../../data/models/service_model.dart';
 import '../../../data/models/staff_model.dart';
-import '../../widgets/home/bottom_nav_bar.dart';
 import '../../widgets/manage/service_card.dart';
 import '../../widgets/manage/staff_card.dart';
 import 'add_staff_screen.dart';
@@ -269,7 +268,6 @@ class _ManageScreenState extends State<ManageScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: const BottomNavBar(currentIndex: 2),
     );
   }
 }

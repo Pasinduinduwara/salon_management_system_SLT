@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../widgets/home/bottom_nav_bar.dart';
 import '../manage/add_staff_screen.dart';
 import '../manage/add_service_screen.dart';
 import '../feedbacks/feedbacks.dart';
@@ -456,7 +455,6 @@ class _DashboardState extends State<Dashboard> {
           ),
         ),
       ),
-      bottomNavigationBar: const BottomNavBar(currentIndex: 0),
     );
   }
 
