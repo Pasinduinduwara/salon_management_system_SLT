@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../widgets/home/bottom_nav_bar.dart';
+import '../../widgets/home/notification_badge.dart';
 import '../manage/add_staff_screen.dart';
 import '../manage/add_service_screen.dart';
 import '../feedbacks/feedbacks.dart';
@@ -25,6 +26,7 @@ class _DashboardState extends State<Dashboard> {
   bool _isLoading = true;
   double _todayRevenue = 0;
   int _completedCount = 0;
+  String? _salonId;
 
   @override
   void initState() {
@@ -36,17 +38,19 @@ class _DashboardState extends State<Dashboard> {
     try {
       setState(() => _isLoading = true);
       final profile = await AuthService.getOwnerProfile();
-      final salonId = profile['salon'] != null 
-          ? profile['salon']['id'] 
+      final salonId = profile['salon'] != null
+          ? profile['salon']['id']
           : profile['_id'];
 
       if (salonId == null) return;
+      _salonId = salonId;
 
       final appointments = await AppointmentsService.fetchAppointments(salonId);
-      
+
       // Filter for today
       final now = DateTime.now();
-      final todayStr = '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+      final todayStr =
+          '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
 
       final todayApps = appointments.where((a) => a.date == todayStr).toList();
 
@@ -99,7 +103,7 @@ class _DashboardState extends State<Dashboard> {
     return Scaffold(
       backgroundColor: const Color(0xFFFFFBF5),
       body: SafeArea(
-        child: _isLoading 
+        child: _isLoading
             ? const Center(child: CircularProgressIndicator())
             : RefreshIndicator(
                 onRefresh: _fetchDashboardData,
@@ -109,7 +113,7 @@ class _DashboardState extends State<Dashboard> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 20),
-        
+
                       // Header with greeting and profile
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -137,34 +141,27 @@ class _DashboardState extends State<Dashboard> {
                             ],
                           ),
                           // Profile avatar with notification badge
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.push(
+                          NotificationBadge(
+                            salonId: _salonId ?? '',
+                            autoRefresh: true, // Auto-refresh every 30 seconds
+                            refreshInterval: const Duration(seconds: 30),
+                            onNotificationTap: () async {
+                              await Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const NotificationPage(),
+                                  builder: (context) =>
+                                      const NotificationPage(),
                                 ),
                               );
+                              // Refresh dashboard when returning from notifications
+                              _fetchDashboardData();
                             },
-                            child: const Stack(
-                              children: [
-                                CircleAvatar(
-                                  radius: 23,
-                                  backgroundColor: Color(0xFFF5F5F5),
-                                  child: Icon(
-                                    Icons.notifications,
-                                    color: Color(0xFF666666),
-                                    size: 28,
-                                  ),
-                                ),
-                              ],
-                            ),
                           ),
                         ],
                       ),
-        
+
                       const SizedBox(height: 24),
-        
+
                       // Revenue Today & Occupancy Cards Row
                       Row(
                         children: [
@@ -177,7 +174,10 @@ class _DashboardState extends State<Dashboard> {
                               ),
                               decoration: BoxDecoration(
                                 gradient: const LinearGradient(
-                                  colors: [Color(0xFF7B68EE), Color(0xFF9370DB)],
+                                  colors: [
+                                    Color(0xFF7B68EE),
+                                    Color(0xFF9370DB),
+                                  ],
                                   begin: Alignment.centerLeft,
                                   end: Alignment.centerRight,
                                 ),
@@ -208,7 +208,8 @@ class _DashboardState extends State<Dashboard> {
                                   ),
                                   // Content
                                   Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       const Text(
@@ -244,9 +245,9 @@ class _DashboardState extends State<Dashboard> {
                               ),
                             ),
                           ),
-        
+
                           const SizedBox(width: 12),
-        
+
                           // Today's Appointments Card
                           Expanded(
                             child: Container(
@@ -271,7 +272,9 @@ class _DashboardState extends State<Dashboard> {
                                         width: 50,
                                         height: 50,
                                         decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(8),
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
                                           color: Colors.white.withOpacity(0.2),
                                         ),
                                       ),
@@ -279,7 +282,8 @@ class _DashboardState extends State<Dashboard> {
                                   ),
                                   // Content
                                   Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       const Text(
@@ -291,7 +295,7 @@ class _DashboardState extends State<Dashboard> {
                                         ),
                                       ),
                                       const SizedBox(height: 4),
-                                      Row(
+                                      Column(
                                         children: [
                                           Text(
                                             '${_todayAppointments.length}',
@@ -302,7 +306,7 @@ class _DashboardState extends State<Dashboard> {
                                               letterSpacing: 0.5,
                                             ),
                                           ),
-                                          const SizedBox(width: 20),
+                                          const SizedBox(width: 10),
                                           Text(
                                             '$_completedCount Completed',
                                             style: const TextStyle(
@@ -321,9 +325,9 @@ class _DashboardState extends State<Dashboard> {
                           ),
                         ],
                       ),
-        
+
                       const SizedBox(height: 28),
-        
+
                       // Actions Section Title
                       const Text(
                         'Quick Actions',
@@ -333,9 +337,9 @@ class _DashboardState extends State<Dashboard> {
                           color: Color(0xFF1A1A1A),
                         ),
                       ),
-        
+
                       const SizedBox(height: 16),
-        
+
                       // Actions Container
                       Container(
                         width: double.infinity,
@@ -354,7 +358,8 @@ class _DashboardState extends State<Dashboard> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => const AddServiceScreen(),
+                                    builder: (context) =>
+                                        const AddServiceScreen(),
                                   ),
                                 );
                               },
@@ -366,8 +371,9 @@ class _DashboardState extends State<Dashboard> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) =>
-                                        const AddStaffScreen(availableServices: []),
+                                    builder: (context) => const AddStaffScreen(
+                                      availableServices: [],
+                                    ),
                                   ),
                                 );
                               },
@@ -379,7 +385,8 @@ class _DashboardState extends State<Dashboard> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => const PromotionsPage(),
+                                    builder: (context) =>
+                                        const PromotionsPage(),
                                   ),
                                 );
                               },
@@ -388,20 +395,32 @@ class _DashboardState extends State<Dashboard> {
                               icon: Icons.rate_review_outlined,
                               label: 'Feedbacks',
                               onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const FeedbacksPage(),
-                                  ),
-                                );
+                                if (_salonId != null) {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          FeedbacksPage(salonId: _salonId!),
+                                    ),
+                                  );
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                        'Unable to load salon information',
+                                      ),
+                                      backgroundColor: Colors.red,
+                                    ),
+                                  );
+                                }
                               },
                             ),
                           ],
                         ),
                       ),
-        
+
                       const SizedBox(height: 28),
-        
+
                       // Today's Appointments Section
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -424,13 +443,15 @@ class _DashboardState extends State<Dashboard> {
                           ),
                         ],
                       ),
-        
+
                       const SizedBox(height: 16),
-        
+
                       // Appointments List
                       Expanded(
                         child: _todayAppointments.isEmpty
-                            ? const Center(child: Text('No appointments for today'))
+                            ? const Center(
+                                child: Text('No appointments for today'),
+                              )
                             : ListView.builder(
                                 itemCount: _todayAppointments.length,
                                 itemBuilder: (context, index) {
@@ -439,7 +460,9 @@ class _DashboardState extends State<Dashboard> {
                                     time: appointment.startTime,
                                     customer: appointment.customerName,
                                     status: appointment.status,
-                                    isInProgress: appointment.status.toLowerCase() == 'in progress',
+                                    isInProgress:
+                                        appointment.status.toLowerCase() ==
+                                        'in progress',
                                   );
                                 },
                               ),
