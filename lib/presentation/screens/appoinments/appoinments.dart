@@ -23,6 +23,7 @@ class _AppointmentsState extends State<Appointments>
   List<Appointment> allAppointments = [];
   bool isLoading = true;
   String? errorMessage;
+  String? salonId;
 
   @override
   void initState() {
@@ -44,19 +45,22 @@ class _AppointmentsState extends State<Appointments>
 
       // 1. Get owner profile to find salonId
       final profile = await AuthService.getOwnerProfile();
-      
+
       // The backend returns the salon info inside a 'salon' object with an 'id' field
-      final salonId = profile['salon'] != null 
-          ? profile['salon']['id'] 
+      final fetchedSalonId = profile['salon'] != null
+          ? profile['salon']['id']
           : profile['_id'];
 
-      if (salonId == null) {
+      if (fetchedSalonId == null) {
         throw Exception('Salon ID not found in profile');
       }
 
+      // Store salonId for navigation
+      salonId = fetchedSalonId;
+
       // 2. Fetch appointments for this salon
       final fetchedAppointments =
-          await AppointmentsService.fetchAppointments(salonId);
+      await AppointmentsService.fetchAppointments(fetchedSalonId);
 
       setState(() {
         allAppointments = fetchedAppointments;
@@ -67,9 +71,11 @@ class _AppointmentsState extends State<Appointments>
         errorMessage = e.toString();
         isLoading = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $errorMessage')),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $errorMessage')),
+        );
+      }
     }
   }
 
@@ -111,12 +117,23 @@ class _AppointmentsState extends State<Appointments>
             ),
             GestureDetector(
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const BookAnAppointment(),
-                  ),
-                );
+                // Check if salonId is available before navigating
+                if (salonId != null) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => BookAnAppointment(
+                        salonId: salonId!,
+                      ),
+                    ),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Please wait, loading salon information...'),
+                    ),
+                  );
+                }
               },
               child: Container(
                 height: 48,
