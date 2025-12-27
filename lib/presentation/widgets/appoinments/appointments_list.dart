@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../utils/appointment_utils.dart';
+import '../../../data/models/appoinment.dart';
 
 class AppointmentsList extends StatelessWidget {
   final DateTime selectedDate;
-  final List<Map<String, dynamic>> appointments;
+  final List<Appointment> appointments;
 
   const AppointmentsList({
     super.key,
@@ -63,7 +64,7 @@ class AppointmentsList extends StatelessWidget {
           Expanded(
             child: Column(
               children: dayAppointments
-                  .map((apt) => _buildAppointmentCard(apt))
+                  .map<Widget>((apt) => _buildAppointmentCard(apt))
                   .toList(),
             ),
           ),
@@ -72,13 +73,15 @@ class AppointmentsList extends StatelessWidget {
     );
   }
 
-  Widget _buildAppointmentCard(Map<String, dynamic> appointment) {
+  Widget _buildAppointmentCard(Appointment appointment) {
     Color borderColor;
-    switch (appointment['status']) {
+    switch (appointment.status.toLowerCase()) {
       case 'completed':
         borderColor = AppColors.completedDot;
         break;
       case 'upcoming':
+      case 'confirmed':
+      case 'pending':
         borderColor = AppColors.upcomingDot;
         break;
       case 'blocked':
@@ -110,17 +113,26 @@ class AppointmentsList extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '${appointment['time']} - ${appointment['professional']}',
+                  '${appointment.displayTime} - ${appointment.professionalName ?? 'No Professional'}',
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: AppColors.darkText,
                   ),
                 ),
-                if (appointment['service'].isNotEmpty) ...[
+                const SizedBox(height: 4),
+                Text(
+                  'Customer: ${appointment.customerName}',
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.darkText,
+                  ),
+                ),
+                if (appointment.services.isNotEmpty) ...[
                   const SizedBox(height: 4),
                   Text(
-                    appointment['service'],
+                    appointment.displayService,
                     style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
                   ),
                 ],

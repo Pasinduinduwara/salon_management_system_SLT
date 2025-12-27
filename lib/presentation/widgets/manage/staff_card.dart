@@ -1,12 +1,14 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'dart:io';
 import '../../../data/models/staff_model.dart';
 
 class StaffCard extends StatelessWidget {
   final StaffModel staff;
   final VoidCallback? onDelete;
+  final VoidCallback? onEdit;
 
-  const StaffCard({Key? key, required this.staff, this.onDelete})
+  const StaffCard({Key? key, required this.staff, this.onDelete, this.onEdit})
     : super(key: key);
 
   void _showDeleteConfirmation(BuildContext context) {
@@ -198,7 +200,7 @@ class StaffCard extends StatelessWidget {
               constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
               onSelected: (value) {
                 if (value == 'edit') {
-                  // Handle edit
+                  onEdit?.call();
                 } else if (value == 'delete') {
                   _showDeleteConfirmation(context);
                 }
@@ -246,7 +248,19 @@ class StaffCard extends StatelessWidget {
   Widget _buildPhoto() {
     // If local file exists, use it (newly added staff)
     if (staff.photo != null) {
-      return Image.file(staff.photo!, height: 60, width: 60, fit: BoxFit.cover);
+      return kIsWeb
+          ? Image.network(
+              staff.photo!.path,
+              height: 60,
+              width: 60,
+              fit: BoxFit.cover,
+            )
+          : Image.file(
+              File(staff.photo!.path),
+              height: 60,
+              width: 60,
+              fit: BoxFit.cover,
+            );
     }
 
     // If photoPath is a URL, use network image
@@ -277,15 +291,22 @@ class StaffCard extends StatelessWidget {
 
     // If photoPath is a local path, use file image
     if (staff.photoPath != null) {
-      return Image.file(
-        File(staff.photoPath!),
-        height: 60,
-        width: 60,
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) {
-          return Icon(Icons.person, size: 30, color: Colors.grey.shade400);
-        },
-      );
+      return kIsWeb
+          ? Image.network(
+              staff.photoPath!,
+              height: 60,
+              width: 60,
+              fit: BoxFit.cover,
+            )
+          : Image.file(
+              File(staff.photoPath!),
+              height: 60,
+              width: 60,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Icon(Icons.person, size: 30, color: Colors.grey.shade400);
+              },
+            );
     }
 
     // No photo available, show placeholder

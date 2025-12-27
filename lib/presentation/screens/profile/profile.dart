@@ -369,17 +369,32 @@ class _ProfileState extends State<Profile> {
                       );
                     },
                   ),
+
+                  // Replace the Feedbacks navigation button in profile.dart with this:
                   _buildSettingsButton(
                     icon: Icons.chat_bubble_outline,
                     label: 'Feedbacks',
                     iconColor: Colors.green,
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const FeedbacksPage(),
-                        ),
-                      );
+                      // Get salon ID from loaded salon data
+                      final salonId = salonData?['_id'] ?? salonData?['id'];
+
+                      if (salonId != null) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                FeedbacksPage(salonId: salonId),
+                          ),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Unable to load salon information'),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      }
                     },
                   ),
                   _buildSettingsButton(
