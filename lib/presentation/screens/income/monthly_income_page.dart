@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../widgets/home/bottom_nav_bar.dart';
 
 class MonthlyIncomePage extends StatelessWidget {
   const MonthlyIncomePage({Key? key}) : super(key: key);
@@ -20,7 +19,6 @@ class MonthlyIncomePage extends StatelessWidget {
         ),
       ),
       backgroundColor: Colors.white,
-      bottomNavigationBar: const BottomNavBar(currentIndex: 3),
     );
   }
 }

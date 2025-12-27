@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import '../../../data/services/auth_service.dart';
-import '../../widgets/home/bottom_nav_bar.dart';
 import '../promotions/promotions_page.dart';
 import '../feedbacks/feedbacks.dart';
 import '../auth/login_screen.dart';
@@ -490,7 +489,6 @@ class _ProfileState extends State<Profile> {
           ),
         ),
       ),
-      bottomNavigationBar: const BottomNavBar(currentIndex: 4),
     );
   }
 

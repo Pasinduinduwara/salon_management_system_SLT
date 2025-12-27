@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../widgets/home/bottom_nav_bar.dart';
 import '../../widgets/appoinments/appointments_calendar.dart';
 import '../../widgets/appoinments/appointments_list.dart';
 import '../../utils/appointment_utils.dart';
@@ -38,6 +37,7 @@ class _AppointmentsState extends State<Appointments>
 
   Future<void> _fetchAppointments() async {
     try {
+      if (!mounted) return;
       setState(() {
         isLoading = true;
         errorMessage = null;
@@ -59,22 +59,25 @@ class _AppointmentsState extends State<Appointments>
       salonId = fetchedSalonId;
 
       // 2. Fetch appointments for this salon
-      final fetchedAppointments =
-      await AppointmentsService.fetchAppointments(fetchedSalonId);
+      final fetchedAppointments = await AppointmentsService.fetchAppointments(
+        fetchedSalonId,
+      );
 
+      if (!mounted) return;
       setState(() {
         allAppointments = fetchedAppointments;
         isLoading = false;
       });
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         errorMessage = e.toString();
         isLoading = false;
       });
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $errorMessage')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: $errorMessage')));
       }
     }
   }
@@ -122,15 +125,16 @@ class _AppointmentsState extends State<Appointments>
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => BookAnAppointment(
-                        salonId: salonId!,
-                      ),
+                      builder: (context) =>
+                          BookAnAppointment(salonId: salonId!),
                     ),
                   );
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text('Please wait, loading salon information...'),
+                      content: Text(
+                        'Please wait, loading salon information...',
+                      ),
                     ),
                   );
                 }
@@ -199,7 +203,6 @@ class _AppointmentsState extends State<Appointments>
                 ),
               ),
             ),
-      bottomNavigationBar: const BottomNavBar(currentIndex: 1),
     );
   }
 }

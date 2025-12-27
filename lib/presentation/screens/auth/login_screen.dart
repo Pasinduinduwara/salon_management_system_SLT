@@ -4,7 +4,7 @@ import 'package:owner_salon_management/presentation/screens/auth/widgets/forgot_
 import 'package:owner_salon_management/presentation/screens/auth/widgets/email_form_field.dart';
 import 'package:owner_salon_management/presentation/screens/auth/widgets/password_form_field.dart';
 import 'package:owner_salon_management/presentation/screens/auth/widgets/login_button.dart';
-import 'package:owner_salon_management/presentation/screens/home/dashboard.dart';
+import '../../../app_main_page.dart';
 import '../../../data/services/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -71,7 +71,7 @@ class _LoginScreenState extends State<LoginScreen> {
       }
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => const Dashboard()),
+        MaterialPageRoute(builder: (_) => const SalonMainApp()),
       );
     } catch (e) {
       if (!mounted) return;

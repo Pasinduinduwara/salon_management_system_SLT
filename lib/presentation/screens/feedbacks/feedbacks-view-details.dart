@@ -175,8 +175,6 @@
 import 'package:flutter/material.dart';
 import 'feedback-reply.dart';
 import '../../widgets/feedbacks/user_profile_widget.dart';
-import '../../widgets/feedbacks/rating_summary_widget.dart';
-import '../../widgets/feedbacks/sub_rating_widget.dart';
 import '../../widgets/feedbacks/customer_comment_widget.dart';
 import '../../widgets/feedbacks/service_details_widget.dart';
 import '../../widgets/feedbacks/reply_button_widget.dart';

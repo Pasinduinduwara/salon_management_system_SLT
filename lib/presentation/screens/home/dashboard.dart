@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../widgets/home/bottom_nav_bar.dart';
 import '../../widgets/home/notification_badge.dart';
 import '../manage/add_staff_screen.dart';
 import '../manage/add_service_screen.dart';
@@ -21,7 +20,6 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-  List<Appointment> _allAppointments = [];
   List<Appointment> _todayAppointments = [];
   bool _isLoading = true;
   double _todayRevenue = 0;
@@ -73,7 +71,6 @@ class _DashboardState extends State<Dashboard> {
       }
 
       setState(() {
-        _allAppointments = appointments;
         _todayAppointments = todayApps;
         _completedCount = completed;
         _todayRevenue = revenue;
@@ -472,7 +469,6 @@ class _DashboardState extends State<Dashboard> {
                 ),
               ),
       ),
-      bottomNavigationBar: const BottomNavBar(currentIndex: 0),
     );
   }
 
