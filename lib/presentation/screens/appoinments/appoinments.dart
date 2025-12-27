@@ -37,6 +37,7 @@ class _AppointmentsState extends State<Appointments>
 
   Future<void> _fetchAppointments() async {
     try {
+      if (!mounted) return;
       setState(() {
         isLoading = true;
         errorMessage = null;
@@ -62,11 +63,13 @@ class _AppointmentsState extends State<Appointments>
         fetchedSalonId,
       );
 
+      if (!mounted) return;
       setState(() {
         allAppointments = fetchedAppointments;
         isLoading = false;
       });
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         errorMessage = e.toString();
         isLoading = false;

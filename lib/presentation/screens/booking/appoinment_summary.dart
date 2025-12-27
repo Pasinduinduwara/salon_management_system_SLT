@@ -84,7 +84,7 @@ class _AppointmentSummaryScreenState extends State<AppointmentSummaryScreen> {
       }).toList();
 
       // Create the appointment
-      final result = await BookingService.createAppointment(
+      await BookingService.createAppointment(
         customerName: widget.customerName,
         customerPhone: widget.customerPhoneNumber,
         customerEmail: widget.customerEmail,
